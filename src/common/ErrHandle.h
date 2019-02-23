@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string>
 
-enum class ErrCodes {WrongArg, UnknownCmd };
+enum class ErrCodes {WrongArg, UnknownCmd, ParseBencodedStringErr };
 
 
 class ErrHandle

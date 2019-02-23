@@ -7,7 +7,7 @@ SRC_FILES   = $(wildcard $(LIB_SRC_DIR)/common/*.cpp) $(wildcard $(LIB_SRC_DIR)/
 
 # Compiler/Linker required information
 CXX      = g++
-CXXFLAGS = -std=c++14 -g -I$(LIB_SRC_DIR) -Wall -pedantic #-pthread
+CXXFLAGS = -std=c++17 -g -I$(LIB_SRC_DIR) -Wall -pedantic #-pthread
 TARGET_RPC	 = pds18-rpc
 
 

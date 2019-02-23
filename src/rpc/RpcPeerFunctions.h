@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-#include "common/ErrHandle.h"
-#include "common/json.hpp"
-#include "RpcArguments.h"
+#include <vector>
 
-using json = nlohmann::json;
+#include "common/ErrHandle.h"
+#include "common/Bencoder.h"
+#include "RpcArguments.h"
 
 void onMessage(RpcArguments* arguments, int argc);
 void onGetList(RpcArguments* arguments, int argc);

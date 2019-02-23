@@ -12,6 +12,7 @@ void onMessage(RpcArguments* arguments, int argc){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
+    Bencoder* benc = new Bencoder();
     //build json 
     json request = {
         {"type", "message"},
@@ -20,7 +21,22 @@ void onMessage(RpcArguments* arguments, int argc){
         {"to", arguments->to},
         {"message", arguments->message}
     };
-    std::cout << request.dump(4) << std::endl;
+    
+    std::string bencoded = benc->encode(request);
+    json decoded;
+    try
+    {
+        decoded = benc->decode(bencoded);
+        std::cout << decoded.dump() << std::endl;
+    }
+    catch(const BencodeExc& e)
+    {
+        ErrHandle::printErrMessage(ErrCodes::ParseBencodedStringErr, bencoded);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
 
 /**
