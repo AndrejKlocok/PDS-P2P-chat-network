@@ -9,12 +9,12 @@
  * 
  */
 #ifndef BENCODER_H
-#define BENCODE_H
+#define BENCODER_H
 
 #include <string>
 #include <iostream>
 
-#include "common/json.hpp"
+#include "../libs/json.hpp"
 #include "common/ErrHandle.h"
 #include "common/MyExceptions.h"
 using json = nlohmann::json;

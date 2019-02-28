@@ -17,6 +17,29 @@ void onDatabase(RpcArguments* arguments, int argc){
         {"type", "database"},
         {"txid", arguments->id}
     };
+    try
+    {
+        json response;
+        UDPClient* client = new UDPClient("", 6969);
+
+        std::cout<<"Sending message: "<< request.dump()<<std::endl;
+        client->sendMessage(request);
+        std::cout<<"Waiting for response"<<std::endl;
+        response = client->recvMessage();
+        std::cout << "Got msg: "<< response.dump()<<std::endl;
+        
+        response.dump();
+    }
+    catch(const SocketExc& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    
 }
 
 /**

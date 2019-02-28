@@ -2,7 +2,8 @@
 #define RPCNODEFUNCTIONS_H
 
 #include "common/ErrHandle.h"
-#include "common/json.hpp"
+#include "common/Bencoder.h"
+#include "common/UDPClient.h"
 
 #include "RpcArguments.h"
 
