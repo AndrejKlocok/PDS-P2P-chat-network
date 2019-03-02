@@ -1,30 +1,30 @@
-#include "NodeHandle.h"
+#include "PeerHandle.h"
 
-NodeHandle::NodeHandle(/* args */){}
+PeerHandle::PeerHandle(/* args */){}
 
-NodeHandle::~NodeHandle(){
+PeerHandle::~PeerHandle(){
     unlink(this->pipeName.c_str());
 }
 
-void NodeHandle::processRequest(int argc){
-    if(argc != 7 ){
+void PeerHandle::processRequest(int argc){
+    if(argc != 13 ){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
+    // --id <identifikátor> --username <user> --chat-ipv4 <IP> --chat-port <port> --reg-ipv4 <IP> --reg-port <port>
     //std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
     
     try
     {
         this->pipeName = std::to_string(args.id);
 
-        Node* node = new Node();
-        std::thread rpcThread(rpcServer, node, this->pipeName);
-        std::thread nodeThread(nodeServer, node);
+        Peer* peer = new Peer();
+        std::thread rpcThread(rpcServer, peer, this->pipeName);
+        std::thread peerThread(peerServer, peer);
 
         rpcThread.join();
-        nodeThread.join();
-
-        //rpcServer(node, this->pipeName);
+        peerThread.join();
+        
         
     }
     catch(const std::exception& e)
@@ -34,11 +34,11 @@ void NodeHandle::processRequest(int argc){
     
 }
 
-void NodeHandle::rpcServer(Node* node, std::string pipeName){
+void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
     int fd;             //descriptor
     char c;             //char 
     std::string buff;   //buffer
-    json request;       //request to node
+    json request;       //request to peer
     try
     {
         mkfifo(pipeName.c_str(), 0666);
@@ -56,7 +56,7 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
 
                 request = json::parse(buff);
                 std::cout<< request.dump()<<std::endl;
-                node->nodeRequest(request);
+                peer->peerRequest(request);
 
             }
             catch(const std::exception& e)
@@ -68,31 +68,43 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
 
             buff.clear();
             
-        } while (!node->getIsExc());
+        } while (!peer->getIsExc());
         
     }
     catch(const std::exception& e)
     {
-        node->setExc();
+        peer->setExc();
         std::cerr << e.what() << '\n';
     }
     
 }
 
 
-void NodeHandle::nodeServer(Node* node){
+void PeerHandle::peerServer(Peer* peer){
 
 }
 
 
-void NodeHandle::setRegPort(  unsigned short regPort){
+void PeerHandle::setRegPort(  unsigned short regPort){
     this->args.regPort = regPort;
 }
 
-void NodeHandle::setRegIpv4( std::string regIpv4){
+void PeerHandle::setRegIpv4( std::string regIpv4){
     this->args.regIpv4 = regIpv4;
 }
 
-void NodeHandle::setId( unsigned short id){
+void PeerHandle::setId( unsigned short id){
     this->args.id = id;
+}
+
+void PeerHandle::setUsername( std::string username){
+    this->args.username = username;
+}
+
+void PeerHandle::setChatPort(  unsigned short chatPort){
+    this->args.chatPort = chatPort;
+}
+
+void PeerHandle::setChatIpv4( std::string chatIpv4){
+    this->args.chatIpv4 = chatIpv4;
 }

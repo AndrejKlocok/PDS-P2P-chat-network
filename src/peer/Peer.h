@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef PEER_H
+#define PEER_H
 
 #include <map>
 #include <string>
@@ -8,7 +8,7 @@
 #include "common/ErrHandle.h"
 #include "common/MyExceptions.h"
 
-#include "NodeFunctions.h"
+#include "PeerFunctions.h"
 
 using json = nlohmann::json;
 
@@ -21,23 +21,23 @@ struct PeerRecord
 };
 
 
-class Node
+class Peer
 {
 private:
-    std::map<unsigned short, PeerRecord> users_registerd;
-    std::map<unsigned short, PeerRecord> users_abroad;
+    //std::map<unsigned short, PeerRecord> users_registerd;
+    //std::map<unsigned short, PeerRecord> users_abroad;
     
-    typedef void (*argFunction) (Node*, json*) ;
+    typedef void (*argFunction) (Peer*, json*) ;
     std::map<std::string, argFunction > funcMap; 
     
     bool isExc;
 public:
-    Node();
-    ~Node();
+    Peer();
+    ~Peer();
 
     void setExc();
     bool getIsExc();
-    void nodeRequest(json request);
+    void peerRequest(json request);
 };
 
-#endif // !NODE_H
+#endif // !PEER_H

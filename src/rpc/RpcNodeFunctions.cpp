@@ -1,6 +1,27 @@
 #include "RpcNodeFunctions.h"
 
 /**
+ * @brief Send request to pipe,  on which peer listens
+ * 
+ * @param id        name of the pipe
+ * @param request   json
+ */
+void sendPipeNodeRequest(unsigned short id, json request){
+    try
+    {
+        std::ofstream file{std::to_string(id)};
+        file << request.dump();
+        file.close();
+    
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+}
+
+
+/**
  * @brief --id <ushort> --node --command database, který zobrazí aktuální databázi peerů a jejich mapování
  * 
  * @param arguments 
@@ -17,29 +38,8 @@ void onDatabase(RpcArguments* arguments, int argc){
         {"type", "database"},
         {"txid", arguments->id}
     };
-    try
-    {
-        json response;
-        UDPClient* client = new UDPClient("", 6969);
 
-        std::cout<<"Sending message: "<< request.dump()<<std::endl;
-        client->sendMessage(request);
-        std::cout<<"Waiting for response"<<std::endl;
-        response = client->recvMessage();
-        std::cout << "Got msg: "<< response.dump()<<std::endl;
-        
-        response.dump();
-    }
-    catch(const SocketExc& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    
-    
+    sendPipeNodeRequest(arguments->id, request);
 }
 
 /**
@@ -59,6 +59,8 @@ void onNeighbors(RpcArguments* arguments, int argc){
         {"type", "neighbors"},
         {"txid", arguments->id}
     };
+
+    sendPipeNodeRequest(arguments->id, request);    
 }
 
 /**
@@ -81,6 +83,8 @@ void onConnect(RpcArguments* arguments, int argc){
         {"ipv4", arguments->regIpv4},
         {"port", arguments->regPort}
     };
+
+    sendPipeNodeRequest(arguments->id, request);
 }
 
 /**
@@ -97,10 +101,12 @@ void onDisconnect(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "database"},
+        {"type", "disconnect"},
         {"txid", arguments->id},
         {"ipv4", arguments->regIpv4}
     };
+
+    sendPipeNodeRequest(arguments->id, request);
 }
 
 /**
@@ -117,8 +123,10 @@ void onSync(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "database"},
+        {"type", "sync"},
         {"txid", arguments->id},
         {"ipv4", arguments->regIpv4}
     };
+
+    sendPipeNodeRequest(arguments->id, request);
 }

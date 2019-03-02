@@ -16,5 +16,4 @@ struct RpcArguments
     Client client;
 };
 
-
 #endif // !RPCARGUMENTS_H

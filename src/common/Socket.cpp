@@ -1,6 +1,6 @@
 #include "Socket.h"
 
-Socket::Socket(std::string IP, ushort port){
+Socket::Socket(std::string IP, unsigned short port){
     benc = new Bencoder();
     memset(&addr, 0, sizeof(addr));
 

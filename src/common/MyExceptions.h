@@ -43,4 +43,21 @@ struct SocketDataExc : public std::exception
     	return "Exception raised recvFrom -1";
     }
 };
+
+struct UnknownType : public std::exception
+{
+	const char * what () const throw ()
+    {
+    	return "Exception raised: type of message not found";
+    }
+};
+
+struct NodeWrongId : public std::exception
+{
+	const char * what () const throw ()
+    {
+    	return "Exception raised: txid";
+    }
+};
+
 #endif // !MYEXCEPTIONS_H

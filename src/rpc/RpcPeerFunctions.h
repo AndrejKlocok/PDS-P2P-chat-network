@@ -1,9 +1,10 @@
 #ifndef RPCPEERFUNCTIONS_H
 #define RPCPEERFUNCTIONS_H
 
-#include <iostream>
-
 #include <vector>
+
+#include <fstream>
+#include <iostream>
 
 #include "common/ErrHandle.h"
 #include "common/Bencoder.h"

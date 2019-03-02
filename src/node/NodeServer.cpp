@@ -1,20 +1,22 @@
-#include "NodePeerServer.h"
+#include "NodeServer.h"
 
-NodePeerServer::NodePeerServer(/* args */)
+NodeServer::NodeServer(std::string IP, unsigned short port)
+{
+    this->socket = new Socket(IP, port);
+    this->socket->bindSocket();
+}
+
+NodeServer::~NodeServer()
 {
 }
 
-NodePeerServer::~NodePeerServer()
-{
-}
-
-void  NodePeerServer::peerWorker(Node* node, Request* req, Socket* socket, json* data){
+void  NodeServer::peerWorker(Node* node, Request* req, Socket* socket, json* data){
     std::cout << "Sent data" << std::endl;
     socket->sendData(*data, req);
 
 }
 
-void NodePeerServer::listen(Node* node){
+void NodeServer::listen(Node* node){
 
     Request* req = new Request();
     req->addrLen = sizeof(struct sockaddr_in);
@@ -25,7 +27,7 @@ void NodePeerServer::listen(Node* node){
             std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< req->addr.sin_port << std::endl;
             std::cout << recvData.dump() << std::endl;
             //spawn thread
-            //std::thread t1(NodePeerServer::peerWorker, node, req, socket, &recvData);
+            //std::thread t1(NodeServer::peerWorker, node, req, socket, &recvData);
             //t1.join();
 
         } while (!node->getIsExc());

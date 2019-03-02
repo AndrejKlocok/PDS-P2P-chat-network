@@ -5,10 +5,23 @@
 #include "src/node/NodeHandle.h"
 #include "src/common/ErrHandle.h"
 
+//static variable
+static NodeHandle* nodeHandle = new NodeHandle();
+
+/**
+ * @brief Handler for SIGINT signal. Cleans pipe
+ * 
+ * @param signum 
+ */
+void signalHandler( int signum ) {
+
+    nodeHandle->~NodeHandle();
+    exit(signum);  
+}
+
 int main(int argc, char** argv)
 {
-    NodeHandle* nodeHandle = new NodeHandle();
-
+    
     int opt;
     int option_index;
     const char* shortOptions = "d:::i::p::";
@@ -16,10 +29,12 @@ int main(int argc, char** argv)
 
     const option longOptions[] = {
         {"id", required_argument, nullptr, 'd'},
-        {"reg-ipv4", optional_argument, nullptr, 'i'},
-        {"reg-port", optional_argument, nullptr, 'p'},
+        {"reg-ipv4", required_argument, nullptr, 'i'},
+        {"reg-port", required_argument, nullptr, 'p'},
         {0, 0, 0, 0 }
     };
+
+    signal(SIGINT, signalHandler);
 
     while ((opt = getopt_long(argc, argv, shortOptions, longOptions, &option_index)) != -1) {
         

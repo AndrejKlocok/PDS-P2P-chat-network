@@ -1,6 +1,26 @@
 #include "RpcPeerFunctions.h"
 
 /**
+ * @brief Send request to pipe,  on which peer listens
+ * 
+ * @param id        name of the pipe
+ * @param request   json
+ */
+void sendPipePeerRequest(unsigned short id, json request){
+    try
+    {
+        std::ofstream file{std::to_string(id)};
+        file << request.dump();
+        file.close();
+    
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+}
+
+/**
  * @brief --id <ushort> --peer --command message --from <username1> --to <username2> --message <message>
  * 
  * @param arguments 
@@ -12,7 +32,6 @@ void onMessage(RpcArguments* arguments, int argc){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
-    Bencoder* benc = new Bencoder();
     //build json 
     json request = {
         {"type", "message"},
@@ -22,21 +41,7 @@ void onMessage(RpcArguments* arguments, int argc){
         {"message", arguments->message}
     };
     
-    std::string bencoded = benc->encode(request);
-    json decoded;
-    try
-    {
-        decoded = benc->decode(bencoded);
-        std::cout << decoded.dump() << std::endl;
-    }
-    catch(const BencodeExc& e)
-    {
-        ErrHandle::printErrMessage(ErrCodes::ParseBencodedStringErr, bencoded);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+    sendPipePeerRequest(arguments->id, request);
 }
 
 /**
@@ -56,6 +61,7 @@ void onGetList(RpcArguments* arguments, int argc){
         {"type", "getlist"},
         {"txid", arguments->id}
     };
+    sendPipePeerRequest(arguments->id, request);
 }
 
 /**
@@ -75,6 +81,7 @@ void onPeers(RpcArguments* arguments, int argc){
         {"type", "peerlist"},
         {"txid", arguments->id}
     };
+    sendPipePeerRequest(arguments->id, request);
 }
 
 /**
@@ -97,4 +104,5 @@ void onReconnect(RpcArguments* arguments, int argc){
         {"ipv4", arguments->regIpv4},
         {"port", arguments->regPort}
     };
+    sendPipePeerRequest(arguments->id, request);
 }

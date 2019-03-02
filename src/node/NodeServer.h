@@ -1,20 +1,20 @@
-#ifndef NODEPEERSERVER_H
-#define NODEPEERSERVER_H
+#ifndef NODESERVER_H
+#define NODESERVER_H
 
 #include <thread>
 
 #include "common/Socket.h"
 #include "Node.h"
 
-class NodePeerServer
+class NodeServer
 {
 private:
     Socket* socket;
 public:
-    NodePeerServer(/* args */);
-    ~NodePeerServer();
+    NodeServer(std::string IP, unsigned short port);
+    ~NodeServer();
     void listen(Node* node);
     void static peerWorker(Node* node, Request* req, Socket* socket, json* data);
 };
 
-#endif // !NODEPEERSERVER_H
+#endif // !NODESERVER_H

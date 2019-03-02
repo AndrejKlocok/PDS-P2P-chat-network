@@ -30,7 +30,7 @@ protected:
     struct sockaddr_in addr;
     Bencoder* benc;
 public:
-    Socket(std::string IP, ushort port);
+    Socket(std::string IP, unsigned short port);
     ~Socket();
     void setReusePort();
     void bindSocket();
