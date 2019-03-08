@@ -62,6 +62,23 @@ void onGetList(Node* node, json data, Request* request, Socket* socket){
     };
 
     socket->sendData(listMsg, request);
+    
+    //wait for ack
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
+    if(!node->acknowledge(transactionNumber)){
+        throw CustomException("Exception raised: Getlist, ack %d not received", transactionNumber);
+    }
+}
+
+void onAck(Node* node, json data, Request* request, Socket* socket){
+    int transactionNumber = data["txid"];
+    node->insertAck(transactionNumber);
+}
+
+void onError(Node* node, json data, Request* request, Socket* socket){
+    int transactionNumber = data["txid"];
+    std::string verbose = data["verbose"];
+
+    std::cerr<<"txid: " << transactionNumber<< ", " << verbose << std::endl;
 }

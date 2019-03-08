@@ -33,13 +33,13 @@ private:
     std::map<std::string, rpcFunction > rpcMap; 
 
     typedef void (*nodeFunction) (Node*, json, Request*, Socket*) ;
-    std::map<std::string, nodeFunction > nodeMap; 
+    std::map<std::string, nodeFunction > requestMap; 
     
     std::vector<unsigned short> acknowledgements;
 
     std::mutex regUsrsMutex, ackMutex;
     bool isExc;
-    int transactionNumber;
+    unsigned short transactionNumber;
 public:
     Node();
     ~Node();
@@ -47,11 +47,12 @@ public:
     void setExc();
     bool getIsExc();
     void rpcRequest(json* request, json* response);
-    void nodeRequest(json data, Request* request, Socket* socket);
+    void request(json data, Request* request, Socket* socket);
     bool addNewLocalPeer(PeerRecord* record);
     bool incPeerTimer(std::string username, int time);
-    int getTransactionNumber();
-    bool acknowledge(int txid);
+    unsigned short getTransactionNumber();
+    bool acknowledge(unsigned short txid);
+    void insertAck(unsigned short txid);
 };
 
 #endif // !NODE_H

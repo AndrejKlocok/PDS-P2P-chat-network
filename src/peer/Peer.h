@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <thread>
+#include <mutex>
 
 #include "../libs/json.hpp"
 #include "common/ErrHandle.h"
@@ -11,30 +12,40 @@
 #include "common/Socket.h"
 
 #include "PeerFunctions.h"
+#include "RpcFunctions.h"
 #include "PeerArguments.h"
-using json = nlohmann::json;
 
 class Peer
 {
 private:
-    int transactionNumber;
     typedef void (*argFunction) (Peer*, json*) ;
-    std::map<std::string, argFunction > peerFunctions; 
+    std::map<std::string, argFunction > rpcMap; 
+
+    typedef void (*nodeFunction) (Peer*, json, Request*, Socket*) ;
+    std::map<std::string, nodeFunction > requestMap; 
+
     PeerArguments* peerArguments;
     Socket* socket;
     std::thread peerConnectionThread;
     bool isExc;
+
+    std::mutex regUsrsMutex, ackMutex;
+    unsigned short transactionNumber;
+    std::vector<unsigned short> acknowledgements;
 public:
     Peer(PeerArguments* args);
     ~Peer();
-
-    void setExc();
-    bool getIsExc();
-    void peerRequest(json request);
     void static peerCommunicator(PeerArguments* args, Peer* peer);
     void disconnectFromNode();
     Socket* getSocket();
-    int getTransactionNumber();
+    
+    void setExc();
+    bool getIsExc();
+    void rpcRequest(json request);
+    void request(json data, Request* request, Socket* socket);
+    unsigned short getTransactionNumber();
+    bool acknowledge(unsigned short txid);
+    void insertAck(unsigned short txid);
 
 };
 

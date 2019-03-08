@@ -61,7 +61,7 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
             {
                 request = json::parse(buff);
                 std::cout<< request.dump()<<std::endl;
-                peer->peerRequest(request);
+                peer->rpcRequest(request);
 
             }
             catch(const std::exception& e)

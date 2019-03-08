@@ -5,10 +5,14 @@ Peer::Peer(PeerArguments* args)
     this->isExc = false;
     this->peerArguments = args;
     this->transactionNumber = 0;
-    peerFunctions["onGetList"] = onGetList;
-    peerFunctions["onMessage"] = onMessage;
-    peerFunctions["onPeers"] = onPeers;
-    peerFunctions["onReconnect"] = onReconnect;
+    
+    rpcMap["onGetList"] = onGetList;
+    rpcMap["onMessage"] = onMessage;
+    rpcMap["onPeers"] = onPeers;
+    rpcMap["onReconnect"] = onReconnect;
+
+    requestMap["list"]        = onList;
+    requestMap["error"]       = onError;
 
     socket = new Socket(args->regIpv4, args->regPort);
 
@@ -23,14 +27,28 @@ Peer::~Peer(){
 }
 
 
-void Peer::peerRequest(json request){
+void Peer::rpcRequest(json request){
 
     //find desired action in map of actions
-    auto iter = peerFunctions.find(request["type"]);
+    auto iter = rpcMap.find(request["type"]);
 
     //call function
-    if(iter != peerFunctions.end()){
+    if(iter != rpcMap.end()){
         iter->second(this, &request);
+    }
+    else{
+        throw UnknownType();
+    }
+}
+
+void Peer::request(json data, Request* request, Socket* socket){
+
+    //find desired action in map of actions
+    auto iter = requestMap.find( data["type"]);
+
+    //call function
+    if(iter != requestMap.end()){ 
+        iter->second(this, data, request, socket);
     }
     else{
         throw UnknownType();
@@ -92,6 +110,27 @@ void Peer::disconnectFromNode(){
     socket->~Socket();
 }
 
+unsigned short Peer::getTransactionNumber(){
+    return transactionNumber++;
+}
+
+bool Peer::acknowledge(unsigned short txid){
+    auto iter = find (acknowledgements.begin(), acknowledgements.end(), txid);
+    
+    //acknowledgement was not found
+    if(iter == acknowledgements.end())
+        return false;
+
+    std::scoped_lock(ackMutex);
+    acknowledgements.erase(iter);
+    return true;
+}
+
+void Peer::insertAck(unsigned short txid){
+    std::scoped_lock(ackMutex);
+    acknowledgements.push_back(txid);
+}
+
 void Peer::setExc(){
     this->isExc = true;
 }
@@ -102,8 +141,4 @@ bool Peer::getIsExc(){
 
 Socket* Peer::getSocket(){
     return socket;
-}
-
-int Peer::getTransactionNumber(){
-    return transactionNumber++;
 }

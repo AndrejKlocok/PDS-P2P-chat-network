@@ -1,23 +1,17 @@
 #include "PeerFunctions.h"
 
-void onGetList(Peer* peer, json* data){
-    json request = {
-            {"type", "getlist"},
-            {"txid", peer->getTransactionNumber()},
-        };
-    
-    peer->getSocket()->sendData(request);
-    
+void onList(Peer* peer, json data, Request* request, Socket* socket){
+    //send all messages from vector of messages
 }
 
-void onPeers(Peer* peer, json* data){
-
+void onAck(Peer* peer, json data, Request* request, Socket* socket){
+    int transactionNumber = data["txid"];
+    peer->insertAck(transactionNumber);
 }
 
-void onMessage(Peer* peer, json* data){
+void onError(Peer* peer, json data, Request* request, Socket* socket){
+    int transactionNumber = data["txid"];
+    std::string verbose = data["verbose"];
 
-}
-
-void onReconnect(Peer* peer, json* data){
-
+    std::cerr<<"txid: " << transactionNumber<< ", " << verbose << std::endl;
 }

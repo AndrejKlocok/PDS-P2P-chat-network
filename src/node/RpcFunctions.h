@@ -5,8 +5,6 @@
 
 class Node;
 
-using json = nlohmann::json;
-
 void onDatabase(Node* node, json* data, json* response);
 void onNeighbors(Node* node, json* data, json* response);
 void onConnect(Node* node, json* data, json* response);

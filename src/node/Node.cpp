@@ -9,8 +9,9 @@ Node::Node()
     rpcMap["disconnect"]   = onDisconnect;
     rpcMap["sync"]         = onSync;
 
-    nodeMap["hello"]        = onHello; 
-    nodeMap["getlist"]      = onGetList;
+    requestMap["hello"]        = onHello; 
+    requestMap["getlist"]      = onGetList;
+    requestMap["error"]        = onError;
 }
 
 Node::~Node(){}
@@ -29,13 +30,13 @@ void Node::rpcRequest(json* request, json* response){
     }
 }
 
-void Node::nodeRequest(json data, Request* request, Socket* socket){
+void Node::request(json data, Request* request, Socket* socket){
 
     //find desired action in map of actions
-    auto iter = nodeMap.find( data["type"]);
+    auto iter = requestMap.find( data["type"]);
 
     //call function
-    if(iter != nodeMap.end()){ 
+    if(iter != requestMap.end()){ 
         iter->second(this, data, request, socket);
     }
     else{
@@ -78,7 +79,7 @@ bool Node::incPeerTimer(std::string username, int time){
     return false;
 }
 
-bool Node::acknowledge(int txid){
+bool Node::acknowledge(unsigned short txid){
     auto iter = find (acknowledgements.begin(), acknowledgements.end(), txid);
     
     //acknowledgement was not found
@@ -87,6 +88,12 @@ bool Node::acknowledge(int txid){
 
     std::scoped_lock(ackMutex);
     acknowledgements.erase(iter);
+    return true;
+}
+
+void Node::insertAck(unsigned short txid){
+    std::scoped_lock(ackMutex);
+    acknowledgements.push_back(txid);
 }
 
 std::vector<PeerRecord*> Node::getUsersVec(){
@@ -106,6 +113,6 @@ bool Node::getIsExc(){
     return this->isExc;
 }
 
-int Node::getTransactionNumber(){
+unsigned short Node::getTransactionNumber(){
     return transactionNumber++;
 }
