@@ -4,6 +4,7 @@ PeerHandle::PeerHandle(/* args */){}
 
 PeerHandle::~PeerHandle(){
     unlink(this->pipeName.c_str());
+    peer->~Peer();    
 }
 
 void PeerHandle::processRequest(int argc){
@@ -12,19 +13,18 @@ void PeerHandle::processRequest(int argc){
         return;
     }
     // --id <identifikátor> --username <user> --chat-ipv4 <IP> --chat-port <port> --reg-ipv4 <IP> --reg-port <port>
-    //std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
-    
+    std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
     try
     {
         this->pipeName = std::to_string(args.id);
 
-        Peer* peer = new Peer();
+        peer = new Peer(&args);
+
         std::thread rpcThread(rpcServer, peer, this->pipeName);
-        std::thread peerThread(peerServer, peer);
+
+        peerServer(peer);
 
         rpcThread.join();
-        peerThread.join();
-        
         
     }
     catch(const std::exception& e)
@@ -34,6 +34,12 @@ void PeerHandle::processRequest(int argc){
     
 }
 
+/**
+ * @brief 
+ * 
+ * @param peer 
+ * @param pipeName 
+ */
 void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
     int fd;             //descriptor
     char c;             //char 
@@ -53,7 +59,6 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
             close(fd);
             try
             {
-
                 request = json::parse(buff);
                 std::cout<< request.dump()<<std::endl;
                 peer->peerRequest(request);
@@ -63,8 +68,6 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
             {
                 std::cerr << e.what() << '\n';
             }
-            
-            
 
             buff.clear();
             
@@ -83,6 +86,7 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
 void PeerHandle::peerServer(Peer* peer){
 
 }
+
 
 
 void PeerHandle::setRegPort(  unsigned short regPort){

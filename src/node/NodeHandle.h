@@ -12,8 +12,8 @@
 #include <thread>
 
 #include "common/ErrHandle.h"
-#include "common/UDPClient.h"
 
+#include "NodeServer.h"
 #include "NodeArguments.h"
 #include "Node.h"
 
@@ -22,6 +22,7 @@ class NodeHandle
 private:
     NodeArguments args;
     std::string pipeName;
+    NodeServer* server;
 public:
     NodeHandle(/* args */);
     ~NodeHandle();
@@ -31,7 +32,6 @@ public:
 
     void processRequest(int argc);
     void static rpcServer(Node* node, std::string pipeName);
-    void static nodeServer(Node* node);
 };
 
 #endif // !NODEHANDLE_H

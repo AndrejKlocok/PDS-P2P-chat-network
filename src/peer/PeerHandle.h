@@ -10,6 +10,7 @@
 #include <string>
 #include <map>
 #include <thread>
+#include <chrono>
 
 #include "common/ErrHandle.h"
 #include "common/UDPClient.h"
@@ -22,6 +23,8 @@ class PeerHandle
 private:
     PeerArguments args;
     std::string pipeName;
+    Peer* peer;
+
 public:
     PeerHandle(/* args */);
     ~PeerHandle();

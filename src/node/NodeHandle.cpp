@@ -4,6 +4,7 @@ NodeHandle::NodeHandle(/* args */){}
 
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
+    server->~NodeServer();
 }
 
 void NodeHandle::processRequest(int argc){
@@ -11,20 +12,23 @@ void NodeHandle::processRequest(int argc){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
-    //std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
-    
+    std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
+
     try
     {
         this->pipeName = std::to_string(args.id);
 
         Node* node = new Node();
+        
+        //spawn rpc worker
         std::thread rpcThread(rpcServer, node, this->pipeName);
-        std::thread nodeThread(nodeServer, node);
+        
+        //create server and listen
+        server = new NodeServer(this->args.regIpv4, this->args.regPort);
+        server->listen(node); 
 
+        //wait for rpc thread to finish
         rpcThread.join();
-        nodeThread.join();
-
-        //rpcServer(node, this->pipeName);
         
     }
     catch(const std::exception& e)
@@ -39,6 +43,7 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
     char c;             //char 
     std::string buff;   //buffer
     json request;       //request to node
+    json response;      //response from node
     try
     {
         mkfifo(pipeName.c_str(), 0666);
@@ -56,15 +61,13 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
 
                 request = json::parse(buff);
                 std::cout<< request.dump()<<std::endl;
-                node->nodeRequest(request);
+                node->rpcRequest(&request, &response);
 
             }
             catch(const std::exception& e)
             {
                 std::cerr << e.what() << '\n';
             }
-            
-            
 
             buff.clear();
             
@@ -78,12 +81,6 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
     }
     
 }
-
-
-void NodeHandle::nodeServer(Node* node){
-
-}
-
 
 void NodeHandle::setRegPort(  unsigned short regPort){
     this->args.regPort = regPort;

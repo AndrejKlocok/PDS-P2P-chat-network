@@ -24,16 +24,16 @@ int main(int argc, char** argv)
     
     int opt;
     int option_index;
-    const char* shortOptions = "d:::i::p::";
+    const char* shortOptions = "d:u::i::p::r::s::";
     unsigned long id, port;
     // --id <identifikátor> --username <user> --chat-ipv4 <IP> --chat-port <port> --reg-ipv4 <IP> --reg-port <port>
     const option longOptions[] = {
         {"id", required_argument, nullptr, 'd'},
-        {"username", required_argument, nullptr, 'u'},
-        {"chat-ipv4", required_argument, nullptr, 'i'},
-        {"chat-port", required_argument, nullptr, 'p'},
-        {"reg-ipv4", required_argument, nullptr, 'r'},
-        {"reg-port", required_argument, nullptr, 's'},
+        {"username", optional_argument, nullptr, 'u'},
+        {"chat-ipv4", optional_argument, nullptr, 'i'},
+        {"chat-port", optional_argument, nullptr, 'p'},
+        {"reg-ipv4", optional_argument, nullptr, 'r'},
+        {"reg-port", optional_argument, nullptr, 's'},
         {0, 0, 0, 0 }
     };
 

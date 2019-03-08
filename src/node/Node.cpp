@@ -3,33 +3,99 @@
 Node::Node()
 {
     this->isExc = false;
-    funcMap["database"]     = onDatabase;
-    funcMap["neighbors"]    = onNeighbors;
-    funcMap["connect"]      = onConnect;
-    funcMap["disconnect"]   = onDisconnect;
-    funcMap["sync"]         = onSync;
-    funcMap["hello"]        = onHello;
-    funcMap["getlist"]      = onGetList;
+    rpcMap["database"]     = onDatabase;
+    rpcMap["neighbors"]    = onNeighbors;
+    rpcMap["connect"]      = onConnect;
+    rpcMap["disconnect"]   = onDisconnect;
+    rpcMap["sync"]         = onSync;
+
+    nodeMap["hello"]        = onHello; 
+    nodeMap["getlist"]      = onGetList;
 }
 
 Node::~Node(){}
 
 
-void Node::nodeRequest(json request){
-
-    /*if(request["txid"] != this->id){
-        throw NodeWrongId();
-    }*/
+void Node::rpcRequest(json* request, json* response){
     //find desired action in map of actions
-    auto iter = funcMap.find(request["type"]);
+    auto iter = rpcMap.find( (*request)["type"]);
 
     //call function
-    if(iter != funcMap.end()){
-        iter->second(this, &request);
+    if(iter != rpcMap.end()){
+        iter->second(this, request, response);
     }
     else{
         throw UnknownType();
     }
+}
+
+void Node::nodeRequest(json data, Request* request, Socket* socket){
+
+    //find desired action in map of actions
+    auto iter = nodeMap.find( data["type"]);
+
+    //call function
+    if(iter != nodeMap.end()){ 
+        iter->second(this, data, request, socket);
+    }
+    else{
+        throw UnknownType();
+    }
+}
+
+bool Node::addNewLocalPeer(PeerRecord* record){
+    //find user in users map
+    auto iter = users_registerd.find(record->username);
+
+    //if user is connected
+    if(iter != users_registerd.end()){ 
+        iter->second->timeout = 0;
+        return false;
+    }
+    
+    std::scoped_lock(regUsrsMutex);
+    this->users_registerd[record->username]= record;
+
+    return true;
+}
+
+bool Node::incPeerTimer(std::string username, int time){
+    
+    //find user in users map
+    auto iter = users_registerd.find(username);
+
+    //if user is in map
+    if(iter != users_registerd.end()){ 
+       //inc timer
+       iter->second->timeout += time;
+       //if timer value is greater than 30s remove entry
+       if(iter->second->timeout > 30){
+           users_registerd.erase(iter);
+            return false;
+       }
+       return true;
+    }
+    return false;
+}
+
+bool Node::acknowledge(int txid){
+    auto iter = find (acknowledgements.begin(), acknowledgements.end(), txid);
+    
+    //acknowledgement was not found
+    if(iter == acknowledgements.end())
+        return false;
+
+    std::scoped_lock(ackMutex);
+    acknowledgements.erase(iter);
+}
+
+std::vector<PeerRecord*> Node::getUsersVec(){
+    std::vector<PeerRecord*> peers;
+    
+    for( std::map<std::string, PeerRecord*>::iterator it = users_registerd.begin(); it != users_registerd.end(); ++it ) {
+        peers.push_back( it->second );
+    }
+    return peers;
 }
 
 void Node::setExc(){
@@ -38,4 +104,8 @@ void Node::setExc(){
 
 bool Node::getIsExc(){
     return this->isExc;
+}
+
+int Node::getTransactionNumber(){
+    return transactionNumber++;
 }

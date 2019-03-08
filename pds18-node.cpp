@@ -29,8 +29,8 @@ int main(int argc, char** argv)
 
     const option longOptions[] = {
         {"id", required_argument, nullptr, 'd'},
-        {"reg-ipv4", required_argument, nullptr, 'i'},
-        {"reg-port", required_argument, nullptr, 'p'},
+        {"reg-ipv4", optional_argument, nullptr, 'i'},
+        {"reg-port", optional_argument, nullptr, 'p'},
         {0, 0, 0, 0 }
     };
 
