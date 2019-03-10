@@ -6,6 +6,7 @@
 #include <mutex>
 #include <chrono>
 #include <thread>
+#include <utility>
 
 #include "common/Socket.h"
 
@@ -28,7 +29,8 @@ class Node
 private:
     std::map<std::string, PeerRecord*> users_registerd;
     std::map<std::string, PeerRecord*> users_abroad;
-    
+    std::map<std::pair <std::string,unsigned short>, Socket*> users_socket;
+
     typedef void (*rpcFunction) (Node*, json*, json*) ;
     std::map<std::string, rpcFunction > rpcMap; 
 
@@ -53,6 +55,7 @@ public:
     unsigned short getTransactionNumber();
     bool acknowledge(unsigned short txid);
     void insertAck(unsigned short txid);
+    Socket* getPeerSocket(std::string Ip, unsigned short port);
 };
 
 #endif // !NODE_H

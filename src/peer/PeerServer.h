@@ -12,7 +12,7 @@ private:
     Socket* socket;
     std::vector<std::thread> threads;
 public:
-    PeerServer(std::string IP, unsigned short port);
+    PeerServer(Socket* socket);
     ~PeerServer();
     void listen(Peer* peer);
     void static worker(Peer* peer, Request* req, Socket* socket, json data);

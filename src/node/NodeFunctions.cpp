@@ -22,7 +22,7 @@ void onHello(Node* node, json data, Request* request, Socket* socket){
     if(node->addNewLocalPeer(record)){
         //std::cout << "New client\n";
         //timer will tick till it is > 30 or user logs out
-        while(node->incPeerTimer(record->username, 1)){ 
+        while(node->incPeerTimer(record->username, 1) && !node->getIsExc()){ 
             //wait 1s
             std::this_thread::sleep_for(std::chrono::seconds(1));
         };

@@ -7,13 +7,16 @@ void onGetList(Peer* peer, json* data){
             {"txid", transactionNumber},
         };
     
-    peer->getSocket()->sendData(request);
+    peer->sendSocket(request);
     
-    // wait for ack
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    // wait for ack 
+    /*json response = socket->recvData();
+
+    peer->request(response, socket->getRequest(), socket);
+
      if(!peer->acknowledge(transactionNumber)){
         throw CustomException("Exception raised: Getlist, ack %d not received", transactionNumber);
-    }
+    }*/
 }
 
 void onPeers(Peer* peer, json* data){

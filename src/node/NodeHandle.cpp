@@ -4,6 +4,7 @@ NodeHandle::NodeHandle(/* args */){}
 
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
+    node->setExc();
     server->~NodeServer();
 }
 
@@ -18,13 +19,14 @@ void NodeHandle::processRequest(int argc){
     {
         this->pipeName = std::to_string(args.id);
 
-        Node* node = new Node();
+        node = new Node();
+        
+        //create server and listen
+        server = new NodeServer(this->args.regIpv4, this->args.regPort);
         
         //spawn rpc worker
         std::thread rpcThread(rpcServer, node, this->pipeName);
         
-        //create server and listen
-        server = new NodeServer(this->args.regIpv4, this->args.regPort);
         server->listen(node); 
 
         //wait for rpc thread to finish
@@ -33,6 +35,7 @@ void NodeHandle::processRequest(int argc){
     }
     catch(const std::exception& e)
     {
+        node->setExc();
         std::cerr << e.what() << '\n';
     }
     

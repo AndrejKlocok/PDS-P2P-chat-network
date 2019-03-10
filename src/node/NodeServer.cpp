@@ -8,6 +8,7 @@ NodeServer::NodeServer(std::string IP, unsigned short port)
 
 NodeServer::~NodeServer()
 {
+    //disc nodes/peers maybe
     //join threads
     for (size_t i = 0; i < threads.size(); i++) {
         if(threads.at(i).joinable()){

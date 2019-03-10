@@ -17,6 +17,7 @@
 
 #include "PeerArguments.h"
 #include "Peer.h"
+#include "PeerServer.h"
 
 class PeerHandle
 {
@@ -24,6 +25,7 @@ private:
     PeerArguments args;
     std::string pipeName;
     Peer* peer;
+    PeerServer* peerServer;
 
 public:
     PeerHandle(/* args */);
@@ -38,7 +40,6 @@ public:
 
     void processRequest(int argc);
     void static rpcServer(Peer* peer, std::string pipeName);
-    void static peerServer(Peer* peer);
 };
 
 #endif // !PEERHANDLE_H

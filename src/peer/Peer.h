@@ -26,18 +26,20 @@ private:
 
     PeerArguments* peerArguments;
     Socket* socket;
+    Request* requestAddr;
     std::thread peerConnectionThread;
     bool isExc;
 
     std::mutex regUsrsMutex, ackMutex;
     unsigned short transactionNumber;
     std::vector<unsigned short> acknowledgements;
+
 public:
-    Peer(PeerArguments* args);
+    Peer(PeerArguments* args, Socket* socket);
     ~Peer();
     void static peerCommunicator(PeerArguments* args, Peer* peer);
     void disconnectFromNode();
-    Socket* getSocket();
+    void sendSocket(json data);
     
     void setExc();
     bool getIsExc();

@@ -35,8 +35,7 @@ void onDatabase(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "database"},
-        {"txid", arguments->id}
+        {"type", "onDatabase"}
     };
 
     sendPipeNodeRequest(arguments->id, request);
@@ -56,8 +55,7 @@ void onNeighbors(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "neighbors"},
-        {"txid", arguments->id}
+        {"type", "onNeighbors"}
     };
 
     sendPipeNodeRequest(arguments->id, request);    
@@ -78,8 +76,7 @@ void onConnect(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "connect"},
-        {"txid", arguments->id},
+        {"type", "onConnect"},
         {"ipv4", arguments->regIpv4},
         {"port", arguments->regPort}
     };
@@ -101,8 +98,7 @@ void onDisconnect(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "disconnect"},
-        {"txid", arguments->id},
+        {"type", "onDisconnect"},
         {"ipv4", arguments->regIpv4}
     };
 
@@ -123,8 +119,7 @@ void onSync(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "sync"},
-        {"txid", arguments->id},
+        {"type", "onSync"},
         {"ipv4", arguments->regIpv4}
     };
 

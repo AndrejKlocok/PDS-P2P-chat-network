@@ -1,11 +1,13 @@
 #include "Peer.h"
 
-Peer::Peer(PeerArguments* args)
+Peer::Peer(PeerArguments* args, Socket* socket)
 {
     this->isExc = false;
     this->peerArguments = args;
     this->transactionNumber = 0;
-    
+    this->socket = socket;
+    this->requestAddr = socket->createRequest(args->regIpv4, args->regPort);
+
     rpcMap["onGetList"] = onGetList;
     rpcMap["onMessage"] = onMessage;
     rpcMap["onPeers"] = onPeers;
@@ -13,8 +15,6 @@ Peer::Peer(PeerArguments* args)
 
     requestMap["list"]        = onList;
     requestMap["error"]       = onError;
-
-    socket = new Socket(args->regIpv4, args->regPort);
 
     peerConnectionThread = std::thread(peerCommunicator, args, this);
 }
@@ -78,8 +78,10 @@ void Peer::peerCommunicator(PeerArguments* args, Peer* peer){
             if(i == 10)
                 i = 0;
             //send hello every 10s
-            if(i == 0)
-                peer->getSocket()->sendData(request);
+            if(i == 0){
+                peer->sendSocket(request);
+                request["txid"] = peer->getTransactionNumber();
+            }
             //sleep for 10s
             std::this_thread::sleep_for(std::chrono::seconds(1));
             i++;
@@ -111,7 +113,8 @@ void Peer::disconnectFromNode(){
 }
 
 unsigned short Peer::getTransactionNumber(){
-    return transactionNumber++;
+    transactionNumber++;
+    return transactionNumber;
 }
 
 bool Peer::acknowledge(unsigned short txid){
@@ -139,6 +142,6 @@ bool Peer::getIsExc(){
     return this->isExc;
 }
 
-Socket* Peer::getSocket(){
-    return socket;
+void Peer::sendSocket(json data){
+    socket->sendData(data, requestAddr);
 }

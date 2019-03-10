@@ -13,22 +13,25 @@ void PeerHandle::processRequest(int argc){
         return;
     }
     // --id <identifikátor> --username <user> --chat-ipv4 <IP> --chat-port <port> --reg-ipv4 <IP> --reg-port <port>
-    std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
+    std::cout<<"IP: " << args.chatIpv4<<", Port: "<<args.chatPort<<std::endl; 
     try
     {
+        Socket* socket = new Socket(args.chatIpv4, args.chatPort);
         this->pipeName = std::to_string(args.id);
-
-        peer = new Peer(&args);
-
+        peerServer = new PeerServer(socket);
+        
+        peer = new Peer(&args, socket);
+        
         std::thread rpcThread(rpcServer, peer, this->pipeName);
-
-        peerServer(peer);
+        
+        peerServer->listen(peer);
 
         rpcThread.join();
         
     }
     catch(const std::exception& e)
     {
+        peer->setExc();
         std::cerr << e.what() << '\n';
     }
     
@@ -81,13 +84,6 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
     }
     
 }
-
-
-void PeerHandle::peerServer(Peer* peer){
-
-}
-
-
 
 void PeerHandle::setRegPort(  unsigned short regPort){
     this->args.regPort = regPort;

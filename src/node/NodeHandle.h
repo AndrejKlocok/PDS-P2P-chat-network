@@ -23,6 +23,7 @@ private:
     NodeArguments args;
     std::string pipeName;
     NodeServer* server;
+    Node* node;
 public:
     NodeHandle(/* args */);
     ~NodeHandle();

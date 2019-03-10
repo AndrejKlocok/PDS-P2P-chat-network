@@ -1,8 +1,8 @@
 #include "PeerServer.h"
 
-PeerServer::PeerServer(std::string IP, unsigned short port)
+PeerServer::PeerServer(Socket* socket)
 {
-    this->socket = new Socket(IP, port);
+    this->socket = socket;
     this->socket->bindSocket();
 }
 
@@ -52,7 +52,6 @@ void PeerServer::listen(Peer* peer){
             std::cout << recvData.dump() << std::endl;
             //spawn thread
             threads.push_back(std::thread(worker, peer, req, socket, recvData));
-            //t1.join();
 
         } while (!peer->getIsExc());
     }

@@ -27,19 +27,20 @@ class Socket
 protected:
     struct timeval timeout;
     int sockfd;
-    struct sockaddr_in addr;
+    Request* request;
     Bencoder* benc;
 public:
     Socket(std::string IP, unsigned short port);
     ~Socket();
     void setReusePort();
+    void setTimeout2s();
     void bindSocket();
     void sendData(json data);
     void sendData(json data, Request* addr);
     json recvData();
     json recvData(Request* addr);
-    
-    json recvDataTimeout();
+    Request* getRequest();
+    Request* createRequest(std::string IP, unsigned short port);
 };
 
 
