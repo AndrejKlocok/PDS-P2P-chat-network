@@ -14,13 +14,13 @@ PeerServer::~PeerServer()
             threads.at(i).join();
         }
     }
-    this->socket->~Socket();
+    //this->socket->~Socket();
 }
 
 void  PeerServer::worker(Peer* peer, Request* req, Socket* socket, json data){
    try
    {
-       peer->request(data, req, socket); 
+       peer->request(data, req); 
    }
    //send back custom exception, f.e. ack not found
    catch(const CustomException& e)
@@ -48,7 +48,7 @@ void PeerServer::listen(Peer* peer){
         //rpc loop while exception does not occur
         do{
             json recvData = socket->recvData(req);
-            std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< req->addr.sin_port << std::endl;
+            std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
             std::cout << recvData.dump() << std::endl;
             //spawn thread
             threads.push_back(std::thread(worker, peer, req, socket, recvData));

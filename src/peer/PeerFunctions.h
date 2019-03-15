@@ -5,8 +5,9 @@
 
 class Peer;
 
-void onList(Peer* peer, json data, Request* request, Socket* socket);
-void onAck(Peer* peer, json data, Request* request, Socket* socket);
-void onError(Peer* peer, json data, Request* request, Socket* socket);
-
+void onList(Peer* peer, json data, Request* request);
+void onAck(Peer* peer, json data, Request* request);
+void onError(Peer* peer, json data, Request* request);
+void onList(Peer* peer, json data, Request* request);
+void onMessage(Peer* peer, json data, Request* request);
 #endif // !PEERFUNCTIONS_H

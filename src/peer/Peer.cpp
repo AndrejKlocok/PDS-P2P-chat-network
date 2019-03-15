@@ -3,6 +3,7 @@
 Peer::Peer(PeerArguments* args, Socket* socket)
 {
     this->isExc = false;
+    this->isHello = false;
     this->peerArguments = args;
     this->transactionNumber = 0;
     this->socket = socket;
@@ -13,8 +14,10 @@ Peer::Peer(PeerArguments* args, Socket* socket)
     rpcMap["onPeers"] = onPeers;
     rpcMap["onReconnect"] = onReconnect;
 
-    requestMap["list"]        = onList;
-    requestMap["error"]       = onError;
+    requestMap["list"]  = onList;
+    requestMap["error"] = onError;
+    requestMap["ack"]   = onAck;
+    requestMap["message"]   = onMessage;
 
     peerConnectionThread = std::thread(peerCommunicator, args, this);
 }
@@ -41,14 +44,14 @@ void Peer::rpcRequest(json request){
     }
 }
 
-void Peer::request(json data, Request* request, Socket* socket){
+void Peer::request(json data, Request* request){ 
 
     //find desired action in map of actions
     auto iter = requestMap.find( data["type"]);
 
     //call function
     if(iter != requestMap.end()){ 
-        iter->second(this, data, request, socket);
+        iter->second(this, data, request);
     }
     else{
         throw UnknownType();
@@ -82,11 +85,11 @@ void Peer::peerCommunicator(PeerArguments* args, Peer* peer){
                 peer->sendSocket(request);
                 request["txid"] = peer->getTransactionNumber();
             }
-            //sleep for 10s
+            //sleep for 1s
             std::this_thread::sleep_for(std::chrono::seconds(1));
             i++;
 
-        } while (!peer->getIsExc());
+        } while (!peer->getHello());
         
     }
     catch(const std::exception& e)
@@ -105,11 +108,21 @@ void Peer::disconnectFromNode(){
             {"ipv4", 0},
             {"port", 0}
         };
-    
-    socket->sendData(request);
+    sendSocket(request);
+}
 
-    // free socket
-    socket->~Socket();
+void Peer::insertMessage(json message){
+    std::scoped_lock(msgMutex);
+    this->messages.push_back(message);
+}
+
+void Peer::sendMessages(json peers){
+    std::scoped_lock(msgMutex);
+    for(json msg: messages){
+        for(json peer : peers){
+
+        }
+    }
 }
 
 unsigned short Peer::getTransactionNumber(){
@@ -136,6 +149,7 @@ void Peer::insertAck(unsigned short txid){
 
 void Peer::setExc(){
     this->isExc = true;
+    this->isHello = true;
 }
 
 bool Peer::getIsExc(){
@@ -144,4 +158,23 @@ bool Peer::getIsExc(){
 
 void Peer::sendSocket(json data){
     socket->sendData(data, requestAddr);
+}
+void Peer::sendSocket(json data, Request* req){
+    socket->sendData(data, req);
+}
+
+bool Peer::getHello(){
+    return this->isHello;
+}
+
+void Peer::setHello(bool value){
+    this->isHello = value;
+}
+
+bool Peer::getPeerDist(){
+    return this->peersDisp;
+}
+
+void Peer::setPeerDisp(bool value){
+    this->peersDisp = value;
 }

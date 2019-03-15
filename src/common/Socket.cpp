@@ -48,7 +48,7 @@ void Socket::sendData(json data, Request* req){
     std::string message = benc->encode(data);
 
     sendto(sockfd, message.c_str(), message.length(),  
-        MSG_CONFIRM, (const struct sockaddr *) &req->addr, req->addrLen);
+        MSG_CONFIRM, (struct sockaddr *) &req->addr, req->addrLen);
 
 }
 
@@ -64,7 +64,7 @@ json Socket::recvData(Request* req){
     do
     {
         n = recvfrom(sockfd, &buff[0], BUFFER_SIZE,  
-            MSG_WAITALL, ( struct sockaddr *) &req->addr, 
+            0, ( struct sockaddr *) &req->addr, 
             &req->addrLen);
         
         if(n == -1){

@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <deque>
 
 #include "../libs/json.hpp"
 #include "common/ErrHandle.h"
@@ -21,16 +22,17 @@ private:
     typedef void (*argFunction) (Peer*, json*) ;
     std::map<std::string, argFunction > rpcMap; 
 
-    typedef void (*nodeFunction) (Peer*, json, Request*, Socket*) ;
+    typedef void (*nodeFunction) (Peer*, json, Request*) ;
     std::map<std::string, nodeFunction > requestMap; 
 
     PeerArguments* peerArguments;
     Socket* socket;
     Request* requestAddr;
     std::thread peerConnectionThread;
-    bool isExc;
-
-    std::mutex regUsrsMutex, ackMutex;
+    bool isExc, isHello;
+    bool peersDisp;
+    std::deque<json> messages;
+    std::mutex msgMutex, ackMutex;
     unsigned short transactionNumber;
     std::vector<unsigned short> acknowledgements;
 
@@ -40,15 +42,21 @@ public:
     void static peerCommunicator(PeerArguments* args, Peer* peer);
     void disconnectFromNode();
     void sendSocket(json data);
-    
-    void setExc();
-    bool getIsExc();
+    void sendSocket(json data, Request* req);
     void rpcRequest(json request);
-    void request(json data, Request* request, Socket* socket);
+    void request(json data, Request* request);
+    
+    void insertMessage(json message);
+    void sendMessages(json peers);
     unsigned short getTransactionNumber();
     bool acknowledge(unsigned short txid);
     void insertAck(unsigned short txid);
-
+    bool getIsExc();
+    void setExc();
+    bool getHello();
+    void setHello(bool value);
+    bool getPeerDist();
+    void setPeerDisp(bool value);
 };
 
 #endif // !PEER_H

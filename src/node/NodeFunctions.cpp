@@ -36,7 +36,10 @@ void onGetList(Node* node, json data, Request* request, Socket* socket){
         {"type", "ack"},
         {"txid", data["txid"]}
     };
-
+    //if peer is not connected ignore
+    if(!node->isPeerLoggedIn(inet_ntoa(request->addr.sin_addr), ntohs(request->addr.sin_port)))
+        return;
+    
     //send ack
     socket->sendData(ack, request);
     json peerRecords;
