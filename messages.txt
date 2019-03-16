@@ -1,0 +1,3 @@
+./build/pds18-rpc --id 1 --peer --command message --from andrej --to andrej --message "hello"
+./build/pds18-rpc --id 1 --peer --command peers
+./build/pds18-rpc --id 1 --peer --command reconnect --reg-ipv4 192.168.2.95 --reg-port 8080

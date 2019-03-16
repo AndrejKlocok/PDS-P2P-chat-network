@@ -40,7 +40,7 @@ public:
     json recvData();
     json recvData(Request* addr);
     Request* getRequest();
-    Request* createRequest(std::string IP, unsigned short port);
+    static Request* createRequest(std::string IP, unsigned short port);
 };
 
 

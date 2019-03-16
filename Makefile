@@ -39,3 +39,12 @@ peer:
 
 clean:
 	rm --recursive --force $(BUILD)/$(TARGET_RPC) $(BUILD)/$(TARGET_PEER) $(BUILD)/$(TARGET_NODE)
+
+rnode:
+	./build/pds18-node --id 42 --reg-ipv4 192.168.2.95 --reg-port 8080
+
+rpeer:
+	./build/pds18-peer --id 1 --username andrej --chat-ipv4 192.168.2.95 --chat-port 8081  -reg-ipv4 192.168.2.95 --reg-port 8080
+
+rpcMsg:
+	./build/pds18-rpc --id 1 --peer --command message --from andrej --to andrej --message "hello"

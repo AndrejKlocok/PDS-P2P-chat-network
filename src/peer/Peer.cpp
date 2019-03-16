@@ -7,12 +7,12 @@ Peer::Peer(PeerArguments* args, Socket* socket)
     this->peerArguments = args;
     this->transactionNumber = 0;
     this->socket = socket;
-    this->requestAddr = socket->createRequest(args->regIpv4, args->regPort);
+    this->requestAddr = Socket::createRequest(args->regIpv4, args->regPort);
 
-    rpcMap["onGetList"] = onGetList;
-    rpcMap["onMessage"] = onMessage;
-    rpcMap["onPeers"] = onPeers;
-    rpcMap["onReconnect"] = onReconnect;
+    rpcMap["getlist"] = onGetList;
+    rpcMap["message"] = onMessage;
+    rpcMap["peers"] = onPeers;
+    rpcMap["reconnect"] = onReconnect;
 
     requestMap["list"]  = onList;
     requestMap["error"] = onError;
@@ -111,20 +111,51 @@ void Peer::disconnectFromNode(){
     sendSocket(request);
 }
 
+void Peer::reconect(std::string ipv4, unsigned short port){
+    setHello(true);
+    peerConnectionThread.join();
+    disconnectFromNode();
+    
+    this->requestAddr = Socket::createRequest(ipv4, port);
+    
+    setHello(false);
+    peerConnectionThread = std::thread(peerCommunicator, peerArguments, this);
+}
+
 void Peer::insertMessage(json message){
     std::scoped_lock(msgMutex);
     this->messages.push_back(message);
 }
 
 void Peer::sendMessages(json peers){
-    std::scoped_lock(msgMutex);
-    for(json msg: messages){
-        for(json peer : peers){
+   json msg = getFrontMessage();
 
+    for(json peer : peers){
+        if(msg["to"] == peer["username"]){
+            std::cout<<"Sending message\n";
+            msg["txid"] = getTransactionNumber();
+            Request* consignee = Socket::createRequest(peer["ipv4"], peer["port"]);
+            sendSocket(msg, consignee);
+            waitAck(msg["txid"]);
+            break;
         }
     }
 }
 
+json Peer::getFrontMessage(){
+    json msg;
+
+    if(messages.empty()){
+        throw PeerMsgEmpty();
+    }
+    else{
+        std::scoped_lock(msgMutex);
+        msg = messages.front();
+        messages.pop_front();
+    }
+    
+    return msg;
+}
 unsigned short Peer::getTransactionNumber(){
     transactionNumber++;
     return transactionNumber;
@@ -145,6 +176,15 @@ bool Peer::acknowledge(unsigned short txid){
 void Peer::insertAck(unsigned short txid){
     std::scoped_lock(ackMutex);
     acknowledgements.push_back(txid);
+}
+
+void Peer::waitAck(int ackNumber){
+    // wait for ack 
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+     if(!acknowledge(ackNumber)){
+        throw CustomException("Exception raised: ack %d not received", ackNumber);
+    }
 }
 
 void Peer::setExc(){

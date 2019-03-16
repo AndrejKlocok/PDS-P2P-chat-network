@@ -2,7 +2,7 @@
 
 Socket::Socket(std::string IP, unsigned short port){
     benc = new Bencoder();
-    request = createRequest(IP, port);
+    request = Socket::createRequest(IP, port);
     
     // create socket 
     if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) { 

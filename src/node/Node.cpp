@@ -12,6 +12,7 @@ Node::Node()
     requestMap["hello"]     = onHello; 
     requestMap["getlist"]   = onGetList;
     requestMap["error"]     = onError;
+    requestMap["ack"]       = onAck;
 }
 
 Node::~Node(){}

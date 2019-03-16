@@ -33,6 +33,7 @@ void  PeerServer::worker(Peer* peer, Request* req, Socket* socket, json data){
         };
         socket->sendData(error);
    }
+   catch(const PeerMsgEmpty& e){}
    catch(const std::exception& e)
    {
        std::cerr << e.what() << '\n';

@@ -61,6 +61,14 @@ struct NodeWrongId : public std::exception
     }
 };
 
+struct PeerMsgEmpty : public std::exception
+{
+	const char * what () const throw ()
+    {
+    	return "Exception raised: No messages to send";
+    }
+};
+
 
 struct CustomException : std::exception
 {

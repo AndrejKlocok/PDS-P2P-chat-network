@@ -45,12 +45,15 @@ public:
     void sendSocket(json data, Request* req);
     void rpcRequest(json request);
     void request(json data, Request* request);
-    
+    void reconect(std::string ipv4, unsigned short port);
+
     void insertMessage(json message);
+    json getFrontMessage();
     void sendMessages(json peers);
     unsigned short getTransactionNumber();
     bool acknowledge(unsigned short txid);
     void insertAck(unsigned short txid);
+    void waitAck(int ackNumber);
     bool getIsExc();
     void setExc();
     bool getHello();

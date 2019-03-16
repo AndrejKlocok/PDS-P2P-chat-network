@@ -34,5 +34,10 @@ void onList(Peer* peer, json data, Request* request){
 }
 
 void onMessage(Peer* peer, json data, Request* request){
+    json ack ={
+        {"type", "ack"},
+        {"txid", data["txid"]}
+    };
+    peer->sendSocket(ack, request);
     std::cout<<data.dump(2)<<std::endl;
 }

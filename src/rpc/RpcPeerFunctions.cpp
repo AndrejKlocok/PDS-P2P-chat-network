@@ -34,7 +34,7 @@ void onMessage(RpcArguments* arguments, int argc){
     }
     //build json 
     json request = {
-        {"type", "onMessage"},
+        {"type", "message"},
         {"from", arguments->from},
         {"to", arguments->to},
         {"message", arguments->message}
@@ -57,7 +57,7 @@ void onGetList(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onGetList"}
+        {"type", "getlist"}
     };
     sendPipePeerRequest(arguments->id, request);
 }
@@ -76,7 +76,7 @@ void onPeers(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onPeers"}
+        {"type", "peers"}
     };
     sendPipePeerRequest(arguments->id, request);
 }
@@ -96,9 +96,9 @@ void onReconnect(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onReconnect"},
+        {"type", "reconnect"},
         {"ipv4", arguments->regIpv4},
-        {"port", arguments->regPort}
+        {"port", std::stoi(arguments->regPort)}
     };
     sendPipePeerRequest(arguments->id, request);
 }
