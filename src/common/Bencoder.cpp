@@ -44,6 +44,11 @@ std::string Bencoder::encode(json bencJson){
         {   
             encodedString += encode(value);
         }
+        // :null( correct repr is {} ) => de
+        else if (value.is_null())
+        {
+            encodedString += "de";
+        }
         //string => len(value):value
         else{
             //get string

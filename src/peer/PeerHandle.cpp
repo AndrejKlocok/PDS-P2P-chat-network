@@ -16,12 +16,14 @@ void PeerHandle::processRequest(int argc){
     std::cout<<"IP: " << args.chatIpv4<<", Port: "<<args.chatPort<<std::endl; 
     try
     {
+        peer = new Peer(&args);
         Socket* socket = new Socket(args.chatIpv4, args.chatPort);
+        peer->setSocket(socket);
+
         this->pipeName = std::to_string(args.id);
         peerServer = new PeerServer(socket);
         
-        peer = new Peer(&args, socket);
-        
+        peer->runCommunicator();
         std::thread rpcThread(rpcServer, peer, this->pipeName);
         
         peerServer->listen(peer);
@@ -31,7 +33,7 @@ void PeerHandle::processRequest(int argc){
     }
     catch(const std::exception& e)
     {
-        peer->setExc();
+        peer->getStorage()->setExc();
         std::cerr << e.what() << '\n';
     }
     
@@ -74,12 +76,12 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
 
             buff.clear();
             
-        } while (!peer->getIsExc());
+        } while (!peer->getStorage()->getIsExc());
         
     }
     catch(const std::exception& e)
     {
-        peer->setExc();
+        peer->getStorage()->setExc(); 
         std::cerr << e.what() << '\n';
     }
     

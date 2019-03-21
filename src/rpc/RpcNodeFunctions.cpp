@@ -35,7 +35,7 @@ void onDatabase(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onDatabase"}
+        {"type", "database"}
     };
 
     sendPipeNodeRequest(arguments->id, request);
@@ -55,14 +55,14 @@ void onNeighbors(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onNeighbors"}
+        {"type", "neighbors"}
     };
 
     sendPipeNodeRequest(arguments->id, request);    
 }
 
 /**
- * @brief --id <ushort> --node --command connect --reg-ipv4 <IP> --reg-port <port>, který se pokusí 
+ * @brief --id <ushort> --node --command connect --reg-ipv4 <IP> --reg-port <port>, který se pokusí navázat sousedství s novým registračním uzlem
  *      navázat sousedství s novým registračním uzlem
  * 
  * @param arguments 
@@ -76,37 +76,36 @@ void onConnect(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onConnect"},
+        {"type", "connect"},
         {"ipv4", arguments->regIpv4},
-        {"port", arguments->regPort}
+        {"port", std::stoi(arguments->regPort)}
     };
 
     sendPipeNodeRequest(arguments->id, request);
 }
 
 /**
- * @brief --id <ushort> --node --command disconnect --reg-ipv4 <IP>, který zruší sousedství s daným uzlem
+ * @brief --id <ushort> --node --command disconnect, který zruší sousedství se všemi uzly (stáhne z jejich DB své autoritativní záznamy) a odpojí node od sítě
  * 
  * @param arguments 
  * @param argc 
  */
 void onDisconnect(RpcArguments* arguments, int argc){
     //last check of valid given args
-    if(argc != 8 || arguments->client != Client::node || arguments->regIpv4.empty()){
+    if(argc != 6 || arguments->client != Client::node){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
     //build json
     json request = {
-        {"type", "onDisconnect"},
-        {"ipv4", arguments->regIpv4}
+        {"type", "disconnect"}
     };
 
     sendPipeNodeRequest(arguments->id, request);
 }
 
 /**
- * @brief --id <ushort> --node --command sync --reg-ipv4 <IP>, která vynutí synchronizaci s daným sousedícím uzlem
+ * @brief --id <ushort> --node --command sync, která vynutí synchronizaci DB s uzly, se kterými node aktuálně sousedí
  * 
  * @param arguments 
  * @param argc 
@@ -119,8 +118,7 @@ void onSync(RpcArguments* arguments, int argc){
     }
     //build json
     json request = {
-        {"type", "onSync"},
-        {"ipv4", arguments->regIpv4}
+        {"type", "sync"}
     };
 
     sendPipeNodeRequest(arguments->id, request);

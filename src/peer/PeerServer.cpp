@@ -17,7 +17,7 @@ PeerServer::~PeerServer()
     //this->socket->~Socket();
 }
 
-void  PeerServer::worker(Peer* peer, Request* req, Socket* socket, json data){
+void  PeerServer::worker(Peer* peer, Request* req, json data){
    try
    {
        peer->request(data, req); 
@@ -28,10 +28,10 @@ void  PeerServer::worker(Peer* peer, Request* req, Socket* socket, json data){
         std::cerr << e.what() << '\n';
         json error = {
             {"type", "error"},
-            {"txid", peer->getTransactionNumber()},
+            {"txid", peer->getStorage()->getTransactionNumber()},
             {"verbose", e.what()}
         };
-        socket->sendData(error);
+        peer->sendSocket(error, req);
    }
    catch(const PeerMsgEmpty& e){}
    catch(const std::exception& e)
@@ -52,9 +52,9 @@ void PeerServer::listen(Peer* peer){
             std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
             std::cout << recvData.dump() << std::endl;
             //spawn thread
-            threads.push_back(std::thread(worker, peer, req, socket, recvData));
+            threads.push_back(std::thread(worker, peer, req, recvData));
 
-        } while (!peer->getIsExc());
+        } while (!peer->getStorage()->getIsExc());
     }
     catch(const SocketDataExc& e){
         std::cerr << e.what() << '\n';

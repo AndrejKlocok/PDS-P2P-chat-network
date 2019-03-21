@@ -2,7 +2,7 @@
 
 void onAck(Peer* peer, json data, Request* request){
     int transactionNumber = data["txid"];
-    peer->insertAck(transactionNumber);
+    peer->getStorage()->insertAck(transactionNumber);
 }
 
 void onError(Peer* peer, json data, Request* request){
@@ -20,16 +20,16 @@ void onList(Peer* peer, json data, Request* request){
     //send ack
     peer->sendSocket(ack);
     //look for peers
-    if(!data["peers"].is_array())
-        throw CustomException("Exception raised: Protocol not supported peers array not found");
+    if(!data["peers"].is_object())
+        throw CustomException("Exception raised: Protocol not supported peers dictionary not found");
 
     //check what to do
-    if(peer->getPeerDist()){
+    if(peer->getStorage()->getPeerDist()){
         std::cout<<data.dump(2)<<std::endl;
-        peer->setPeerDisp(false);
+        peer->getStorage()->setPeerDisp(false);
     }
     
-    peer->sendMessages(data["peers"]);
+    peer->getStorage()->sendMessages(data["peers"]);
     
 }
 

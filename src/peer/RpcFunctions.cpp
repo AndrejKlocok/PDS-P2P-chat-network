@@ -1,24 +1,22 @@
 #include "RpcFunctions.h"
 
 void onGetList(Peer* peer, json* data){
-    unsigned short transactionNumber = peer->getTransactionNumber();
+    unsigned short transactionNumber = peer->getStorage()->getTransactionNumber();
     json request = {
             {"type", "getlist"},
             {"txid", transactionNumber},
         };
-    
-    peer->sendSocket(request);
-    peer->waitAck(request["txid"]);
+    peer->sendSocketWait(request);
 }
 
 void onPeers(Peer* peer, json* data){
 
-    peer->setPeerDisp(true);
+    peer->getStorage()->setPeerDisp(true);
     onGetList(peer, data);
 }
 
 void onMessage(Peer* peer, json* data){
-    peer->insertMessage(*data);
+    peer->getStorage()->insertMessage(*data);
     onGetList(peer, data);
 }
 

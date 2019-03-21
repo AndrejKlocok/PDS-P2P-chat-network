@@ -10,51 +10,42 @@
 
 #include "common/Socket.h"
 
+#include "NodeStorage.h"
 #include "NodeFunctions.h"
 #include "RpcFunctions.h"
+#include "NodeArguments.h"
 
-using json = nlohmann::json;
-
-struct PeerRecord
-{
-    std::string username;
-    std::string ip;
-    unsigned short port;
-    unsigned int timeout;
-};
-
-
+class NodeStorage;
 class Node
 {
 private:
-    std::map<std::string, PeerRecord*> users_registerd;
-    std::map<std::string, PeerRecord*> users_abroad;
-
-    typedef void (*rpcFunction) (Node*, json*, json*) ;
+    typedef void (*rpcFunction) (Node*, json*) ;
     std::map<std::string, rpcFunction > rpcMap; 
 
-    typedef void (*nodeFunction) (Node*, json, Request*, Socket*) ;
+    typedef void (*nodeFunction) (Node*, json, Request*) ;
     std::map<std::string, nodeFunction > requestMap; 
-    
-    std::vector<unsigned short> acknowledgements;
-
-    std::mutex regUsrsMutex, ackMutex;
-    bool isExc;
-    unsigned short transactionNumber;
+    NodeStorage* storage;
+    Socket* socket;
+    NodeArguments* args;
+    std::mutex updateThreadMutex;
+    std::map<std::pair<std::string, unsigned int>, std::thread> updateThreads;
+    std::string me;
 public:
-    Node();
+    Node(NodeArguments* args);
     ~Node();
-    std::vector<PeerRecord*> getUsersVec();
-    void setExc();
-    bool getIsExc();
-    void rpcRequest(json* request, json* response);
-    void request(json data, Request* request, Socket* socket);
-    bool addNewLocalPeer(PeerRecord* record);
-    bool incPeerTimer(std::string username, int time);
-    unsigned short getTransactionNumber();
-    bool acknowledge(unsigned short txid);
-    void insertAck(unsigned short txid);
-    bool isPeerLoggedIn(std::string ip, unsigned short port);
+    
+    NodeArguments* getArguments();
+    void rpcRequest(json* request);
+    void request(json data, Request* request);
+    void sendSocket(json data, Request* req);
+    void static nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port);
+    NodeStorage* getStorage();
+    void setSocket(Socket* socket);
+    void sendSocketWait(json data, Request* req);
+    bool connectNode(std::string ipv4, unsigned int port);
+    void releaseThread(std::pair<std::string, unsigned int> ip_port);
+    void disconnect();
+    std::string getMe();
 };
 
 #endif // !NODE_H

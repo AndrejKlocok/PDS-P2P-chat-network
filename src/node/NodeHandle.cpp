@@ -4,7 +4,7 @@ NodeHandle::NodeHandle(/* args */){}
 
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
-    node->setExc();
+    node->getStorage()->setExc();
     server->~NodeServer();
 }
 
@@ -17,28 +17,24 @@ void NodeHandle::processRequest(int argc){
 
     try
     {
+        node = new Node(&args);
+        Socket* socket = new Socket(args.regIpv4, args.regPort);
+        node->setSocket(socket);
         this->pipeName = std::to_string(args.id);
-
-        node = new Node();
+        server = new NodeServer(socket);
         
-        //create server and listen
-        server = new NodeServer(this->args.regIpv4, this->args.regPort);
-        
-        //spawn rpc worker
         std::thread rpcThread(rpcServer, node, this->pipeName);
         
         server->listen(node); 
 
-        //wait for rpc thread to finish
         rpcThread.join();
         
     }
     catch(const std::exception& e)
     {
-        node->setExc();
+        node->getStorage()->setExc();
         std::cerr << e.what() << '\n';
     }
-    
 }
 
 void NodeHandle::rpcServer(Node* node, std::string pipeName){
@@ -46,7 +42,6 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
     char c;             //char 
     std::string buff;   //buffer
     json request;       //request to node
-    json response;      //response from node
     try
     {
         mkfifo(pipeName.c_str(), 0666);
@@ -63,8 +58,8 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
             {
 
                 request = json::parse(buff);
-                std::cout<< request.dump()<<std::endl;
-                node->rpcRequest(&request, &response);
+                std::cout<< "RPC: "<< request.dump()<<std::endl;
+                node->rpcRequest(&request);
 
             }
             catch(const std::exception& e)
@@ -74,12 +69,12 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
 
             buff.clear();
             
-        } while (!node->getIsExc());
+        } while (!node->getStorage()->getIsExc());
         
     }
     catch(const std::exception& e)
     {
-        node->setExc();
+        node->getStorage()->setExc();
         std::cerr << e.what() << '\n';
     }
     

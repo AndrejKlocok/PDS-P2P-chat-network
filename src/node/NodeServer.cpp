@@ -1,8 +1,8 @@
 #include "NodeServer.h"
 
-NodeServer::NodeServer(std::string IP, unsigned short port)
+NodeServer::NodeServer(Socket* socket)
 {
-    this->socket = new Socket(IP, port);
+    this->socket = socket;
     this->socket->bindSocket();
 }
 
@@ -18,10 +18,10 @@ NodeServer::~NodeServer()
     this->socket->~Socket();
 }
 
-void  NodeServer::worker(Node* node, Request* req, Socket* socket, json data){    
+void  NodeServer::worker(Node* node, Request* req, json data){    
    try
    {
-       node->request(data, req, socket);
+       node->request(data, req);
    }
    //send back custom exception, f.e. ack not found
    catch(const CustomException& e)
@@ -29,10 +29,10 @@ void  NodeServer::worker(Node* node, Request* req, Socket* socket, json data){
         std::cerr << e.what() << '\n';
         json error = {
             {"type", "error"},
-            {"txid", node->getTransactionNumber()},
+            {"txid", node->getStorage()->getTransactionNumber()},
             {"verbose", e.what()}
         };
-        socket->sendData(error);
+        node->sendSocket(error, req);
    }
    catch(const std::exception& e)
    {
@@ -52,13 +52,13 @@ void NodeServer::listen(Node* node){
             std::cout << recvData.dump() << std::endl;
             
             //spawn thread
-            threads.push_back(std::thread(worker, node, req, socket, recvData));
+            threads.push_back(std::thread(worker, node, req, recvData));
 
-        } while (!node->getIsExc());
+        } while (!node->getStorage()->getIsExc());
     }
     catch(const std::exception& e)
     {
-        node->setExc();
+        node->getStorage()->setExc();
         std::cerr << e.what() << '\n';
     }         
 }

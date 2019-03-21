@@ -15,7 +15,7 @@ public:
     PeerServer(Socket* socket);
     ~PeerServer();
     void listen(Peer* peer);
-    void static worker(Peer* peer, Request* req, Socket* socket, json data);
+    void static worker(Peer* peer, Request* req, json data);
 };
 
 #endif // !PEERSERVER_H
