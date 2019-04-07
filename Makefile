@@ -1,6 +1,6 @@
 SRC_DIR  	= src
 LIBS_DIR	= libs
-BUILD 		= build
+IP = 192.168.2.95
 
 
 # Set of src/inc files used in build process
@@ -9,10 +9,9 @@ COMMON_FILES= $(wildcard $(SRC_DIR)/common/*.cpp)
 RPC_FILES   = $(wildcard $(SRC_DIR)/rpc/*.cpp)
 NODE_FILES 	= $(wildcard $(SRC_DIR)/node/*.cpp)
 PEER_FILES	= $(wildcard $(SRC_DIR)/peer/*.cpp)
-LIBS_FILES	= $(wildcard $(LIBS_DIR)/*.*)
+LIBS_FILES	= $(wildcard $(LIBS_DIR)/*.a)
 
-OBJ			= $(COMMON_FILES:.cpp=.o) $(RPC_FILES:.cpp=.o) $(NODE_FILES:.cpp=.o)
-
+OBJ			= $(COMMON_FILES:.cpp=.o) $(RPC_FILES:.cpp=.o) $(NODE_FILES:.cpp=.o) $(PEER_FILES:.cpp=.o)
 
 # Compiler/Linker required information
 CXX      = g++
@@ -25,32 +24,48 @@ RPC		= $(TARGET_RPC).cpp
 NODE	= $(TARGET_NODE).cpp
 PEER	= $(TARGET_PEER).cpp
 
-all: rpc node peer
+all: $(TARGET_RPC) $(TARGET_NODE) $(TARGET_PEER)
+
+rpc: $(TARGET_RPC)
+
+node: $(TARGET_NODE)
+
+peer: $(TARGET_PEER)
 
 
-rpc:
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES) $(COMMON_FILES) $(RPC_FILES)  $(RPC) -o $(BUILD)/$(TARGET_RPC) 
+$(TARGET_RPC): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(RPC)
 
-node:
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES) $(COMMON_FILES) $(NODE_FILES)  $(NODE) -o $(BUILD)/$(TARGET_NODE) 
+$(TARGET_NODE): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(NODE)
 
-peer:
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES) $(COMMON_FILES) $(PEER_FILES)  $(PEER) -o $(BUILD)/$(TARGET_PEER) 
+$(TARGET_PEER): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(PEER)
+
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(LIBS_FILES) -c $< -o $@
+
+cleanOBJ:
+	rm --recursive --force $(OBJ)
 
 clean:
-	rm --recursive --force $(BUILD)/$(TARGET_RPC) $(BUILD)/$(TARGET_PEER) $(BUILD)/$(TARGET_NODE)
+	rm --recursive --force $(OBJ) $(TARGET_RPC) $(TARGET_NODE) $(TARGET_PEER)
 
 rnode1:
-	./build/pds18-node --id 42 --reg-ipv4 192.168.1.105 --reg-port 8070
+	./pds18-node --id 42 --reg-ipv4 $(IP) --reg-port 8042
 
 rnode2:
-	./build/pds18-node --id 43 --reg-ipv4 192.168.1.105 --reg-port 8071
+	./pds18-node --id 43 --reg-ipv4 $(IP) --reg-port 8043
+
+rnode3:
+	./pds18-node --id 44 --reg-ipv4 $(IP)--reg-port 8044
 
 rpeer1:
-	./build/pds18-peer --id 1 --username andrej --chat-ipv4 192.168.1.105 --chat-port 8081  -reg-ipv4 192.168.1.105 --reg-port 8070
+	./pds18-peer --id 1 --username andrej --chat-ipv4 $(IP)--chat-port 8081  -reg-ipv4 $(IP) --reg-port 8042
 
 rpeer2:
-	./build/pds18-peer --id 2 --username aneta --chat-ipv4 192.168.1.105 --chat-port 8082  -reg-ipv4 192.168.1.105 --reg-port 8070
+	./pds18-peer --id 2 --username aneta --chat-ipv4 $(IP)--chat-port 8082  -reg-ipv4 $(IP) --reg-port 8043
 
-rpcMsg:
-	./build/pds18-rpc --id 1 --peer --command message --from andrej --to andrej --message "hello"
+rpeer3:
+	./pds18-peer --id 3 --username jozef --chat-ipv4 $(IP) --chat-port 8083  -reg-ipv4 $(IP) --reg-port 8044

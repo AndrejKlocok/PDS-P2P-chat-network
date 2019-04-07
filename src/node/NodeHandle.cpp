@@ -5,6 +5,7 @@ NodeHandle::NodeHandle(/* args */){}
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
     node->getStorage()->setExc();
+    node->~Node();
     server->~NodeServer();
 }
 

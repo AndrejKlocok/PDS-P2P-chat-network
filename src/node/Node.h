@@ -42,7 +42,7 @@ public:
     NodeStorage* getStorage();
     void setSocket(Socket* socket);
     void sendSocketWait(json data, Request* req);
-    bool connectNode(std::string ipv4, unsigned int port);
+    bool connectNode(std::string ipv4, unsigned int port, bool authority);
     void releaseThread(std::pair<std::string, unsigned int> ip_port);
     void disconnect();
     std::string getMe();

@@ -1,6 +1,19 @@
-./build/pds18-rpc --id 1 --peer --command message --from andrej --to andrej --message "hello"
+./build/pds18-rpc --id 1 --peer --command message --from andrej --to anet --message "hello"
+./build/pds18-rpc --id 1 --peer --command getlist
 ./build/pds18-rpc --id 1 --peer --command peers
-./build/pds18-rpc --id 1 --peer --command reconnect --reg-ipv4 192.168.2.95 --reg-port 8080
-./build/pds18-rpc --id 42 --node --command connect --reg-ipv4 192.168.2.95 --reg-port 8071
+./build/pds18-rpc --id 1 --peer --command reconnect --reg-ipv4 192.168.1.105 --reg-port 8070
+./build/pds18-rpc --id 42 --node --command connect --reg-ipv4 192.168.1.105 --reg-port 8071
 ./build/pds18-rpc --id 42 --node --command disconnect
 ./build/pds18-rpc --id 42 --node --command neighbors
+./build/pds18-rpc --id 42 --node --command database
+./build/pds18-rpc --id 42 --node --command sync
+
+--peer --command message --from <username1> --to <username2> --message <zpráva>, který se pokusí odeslat chat zprávu
+--peer --command getlist, který vynutí aktualizaci seznamu v síti známých peerů, tj. odešle zprávu GETLIST a nechá si ji potvrdit
+--peer --command peers, který zobrazí aktuální seznam peerů v síti, tj. peer si s node vymění zprávy GETLIST a LIST, přičemž obsah zprávy LIST vypíše
+--peer --command reconnect --reg-ipv4 <IP> --reg-port <port>, který se odpojí od současného registračního uzlu (nulové HELLO) a připojí se k uzlu specifikovaném v parametrech
+--node --command database, který zobrazí aktuální databázi peerů a jejich mapování
+--node --command neighbors, který zobrazí seznam aktuálních sousedů registračního uzlu
+--node --command connect --reg-ipv4 <IP> --reg-port <port>, který se pokusí navázat sousedství s novým registračním uzlem
+--node --command disconnect, který zruší sousedství se všemi uzly (stáhne z jejich DB své autoritativní záznamy) a odpojí node od sítě
+--node --command sync, která vynutí synchronizaci DB s uzly, se kterými node aktuálně sousedí

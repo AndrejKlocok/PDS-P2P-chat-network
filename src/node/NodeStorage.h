@@ -15,7 +15,7 @@ struct NodeRecord
 {
     Request* request;
     unsigned int timeout;
-    json peers;//std::vector<PeerRecord> peers;
+    std::vector<PeerRecord> peers; //json peers;
 };
 
 class Node;
@@ -25,11 +25,13 @@ private:
     Node* node;
     std::map<std::string, PeerRecord*> users_registerd;
     std::map<std::pair<std::string, unsigned int>, NodeRecord*> neighbors;
+    std::vector<std::pair<std::string, unsigned int>> disconectedNeighbors;
     std::vector<unsigned short> acknowledgements;
 
     std::mutex regUsrsMutex, ackMutex, neighborsMutex;
     bool isExc, isDisc;
     unsigned short transactionNumber;
+
 public:
     NodeStorage(Node* node);
     ~NodeStorage();
@@ -46,13 +48,15 @@ public:
     void insertAck(unsigned short txid);
     bool isPeerLoggedIn(std::string ip, unsigned short port);
     bool isNodeAlive(std::pair<std::string, unsigned int> ip_port);
-    bool addNeighbor(std::string ipv4, unsigned int port);
+    bool addNeighbor(std::string ipv4, unsigned int port, bool authority);
     bool deleteNeighbor(std::string ipv4, unsigned int port);
-    void updateNeighborsPeers(std::pair<std::string, unsigned int> ip_port, json peers);
+    void updateNeighborsPeers(std::pair<std::string, unsigned int> ip_port, std::vector<PeerRecord> peers);
     json getPeerRecords();
     json getDbRecords();
     std::map<std::pair<std::string, unsigned int>, NodeRecord*> getNeighbors();
+    json getAllPeersRecords();
     void emptyNeighbors();
+    void addDiscNeighbor(std::pair<std::string, unsigned int> ip_port);
 };
 
 #endif // !NODESTORAGE_H

@@ -21,12 +21,15 @@ Node::Node(NodeArguments* args)
 }
 
 Node::~Node(){
+    disconnect();
+
     storage->emptyNeighbors();
     for( auto it = updateThreads.begin(); it != updateThreads.end(); ++it ) {
         if(it->second.joinable()){
             it->second.join();
         }
     }
+    //notify peers
 }
 
 
@@ -88,6 +91,10 @@ void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
         } while (node->getStorage()->incNodeTimer(ip_port, 1) && !node->getStorage()->getIsExc()); 
         
         std::cout<<"Timeout\n";
+        
+        //if node is disconnecting do nothing else notify that node is disconnected
+        if(!node->getStorage()->getIsDisc())
+            node->getStorage()->addDiscNeighbor(ip_port);
     }
     catch(const std::exception& e)
     {
@@ -114,10 +121,15 @@ void Node::releaseThread(std::pair<std::string, unsigned int> ip_port){
     }
 }
 
-bool Node::connectNode(std::string ipv4, unsigned int port){
+bool Node::connectNode(std::string ipv4, unsigned int port, bool authority){
     auto ip_port = std::make_pair(ipv4, port);
     
-    if(!storage->getIsDisc() && storage->addNeighbor(ipv4, port)){
+    //cant connect to myself
+    if(this->args->regIpv4 == ipv4 && this->args->regPort == port){
+        return false;
+    }
+
+    if(!storage->getIsDisc() && storage->addNeighbor(ipv4, port, authority)){
         //check if it is not timeouted connection
         releaseThread(ip_port);
         updateThreads[ip_port] = std::thread(nodeUpdate, this, ip_port);
@@ -138,7 +150,7 @@ void Node::disconnect(){
     {  
         disconnect["txid"] = storage->getTransactionNumber(); 
         storage->deleteNeighbor(neighbor.first.first, neighbor.first.second);
-        sendSocketWait(disconnect, neighbor.second->request);
+        sendSocket(disconnect, neighbor.second->request);
     }
 }
 

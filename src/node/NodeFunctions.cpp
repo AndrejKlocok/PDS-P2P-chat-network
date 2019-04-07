@@ -42,7 +42,7 @@ void onGetList(Node* node, json data, Request* request){
     
     //send ack
     node->sendSocket(ack, request);
-    json peerRecords = node->getStorage()->getPeerRecords();
+    json peerRecords = node->getStorage()->getAllPeersRecords();
 
     //PEER_RECORD := {"<ushort>":{"username":"<string>", "ipv4":"<dotted_decimal_IP>", "port": <ushort>}}     
     int transactionNumber = node->getStorage()->getTransactionNumber();
@@ -64,7 +64,8 @@ void onUpdate(Node* node, json data, Request* request){
     std::string ipv4 = std::string(inet_ntoa(request->addr.sin_addr));
     unsigned int port = ntohs(request->addr.sin_port);
 
-    node->connectNode(ipv4, port);
+    //try to connect to sender - authority
+    node->connectNode(ipv4, port, true);
     
     auto ip_port = std::make_pair(ipv4, port);
     json db = data["db"];
@@ -72,31 +73,38 @@ void onUpdate(Node* node, json data, Request* request){
     std::string key = ipv4+","+std::to_string(port);
     //find autoritaive database and update
     for (json::iterator it = db.begin(); it != db.end(); ++it) {
+        //autoritative database
         if(it.key() == key){
+            std::vector<PeerRecord> peers;
             //for each peer ("number")
             if(it.value().is_object()){
-                for (json::iterator it_test = it.value().begin(); it_test != it.value().end(); ++it_test){
-                    //chceck json structure
-                    if(!it_test.value()["username"].is_string() && 
-                        !it_test.value()["port"].is_number() &&
-                        !it_test.value()["ipv4"].is_string())
+                for (json::iterator it_peer = it.value().begin(); it_peer != it.value().end(); ++it_peer){
+                    PeerRecord peer;
+                    try
+                    {
+                        peer.username = it_peer.value()["username"];
+                        peer.ip = it_peer.value()["ipv4"];
+                        peer.port = it_peer.value()["port"];
+                        peers.push_back(peer);
+                    }
+                    catch(const std::exception& e)
                     {
                         throw CustomException("Protocol not supported: db entries");
                     }
                 }  
             }
-            node->getStorage()->updateNeighborsPeers(ip_port, it.value()); 
-        }else if(it.key() != node->getMe()){
-            //try fullhash
-
+            node->getStorage()->updateNeighborsPeers(ip_port, peers); 
+        //try fullhash (not with me ofc)
+        }else {
             size_t pos = 0;
             std::string ipv4_tmp;
             unsigned int port_tmp;
             if ((pos = it.key().find(",")) != std::string::npos) {
                 ipv4_tmp = it.key().substr(0, pos);
                 port_tmp = atoi(it.key().substr(pos+1).c_str());
-
-                node->connectNode(ipv4_tmp, port_tmp);
+                
+                // try to connect to neighbor - authority is false
+                node->connectNode(ipv4_tmp, port_tmp, false);
             }
             else{
                 throw CustomException("Protocol not supported: db entries");

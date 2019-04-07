@@ -23,13 +23,15 @@ void PeerStorage::sendMessages(json peers){
     for (auto& [key, value] : peers.items()) {
         if(msg["to"] == value["username"]){
             (void)key;
-            std::cout<<"Sending message\n";
             msg["txid"] = getTransactionNumber();
             Request* consignee = Socket::createRequest(value["ipv4"], value["port"]);
             peer->sendSocketWait(msg, consignee);
-            break;
+            return;
         }
     }
+    //Message was not sent
+    std::string to = msg["to"];
+    throw PeerNotFoundException("Exception raised: %s is not accessible", to.c_str());
 }
 
 json PeerStorage::getFrontMessage(){
