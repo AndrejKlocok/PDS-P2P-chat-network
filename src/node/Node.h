@@ -16,14 +16,15 @@
 #include "NodeArguments.h"
 
 class NodeStorage;
+
+typedef void (*baseFunction) (Node*, json, Request*);
+typedef void (*rpcFunction) (Node*, json*);
+
 class Node
 {
 private:
-    typedef void (*rpcFunction) (Node*, json*) ;
     std::map<std::string, rpcFunction > rpcMap; 
-
-    typedef void (*nodeFunction) (Node*, json, Request*) ;
-    std::map<std::string, nodeFunction > requestMap; 
+    std::map<std::string, baseFunction > requestMap; 
     NodeStorage* storage;
     Socket* socket;
     NodeArguments* args;
@@ -33,7 +34,9 @@ private:
 public:
     Node(NodeArguments* args);
     ~Node();
-    
+
+    void registerRpcRequest(std::string keyName, rpcFunction func);
+    void registerBaseRequest(std::string keyName, baseFunction func);
     NodeArguments* getArguments();
     void rpcRequest(json* request);
     void request(json data, Request* request);

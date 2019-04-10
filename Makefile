@@ -1,6 +1,6 @@
 SRC_DIR  	= src
 LIBS_DIR	= libs
-IP = 192.168.2.95
+IP = 192.168.1.105
 
 
 # Set of src/inc files used in build process
@@ -19,10 +19,12 @@ CXXFLAGS = -std=c++17 -g -I$(SRC_DIR) -Wall -pedantic -pthread
 TARGET_RPC	= pds18-rpc
 TARGET_NODE	= pds18-node
 TARGET_PEER	= pds18-peer
+TARGET_TEST = test
 
 RPC		= $(TARGET_RPC).cpp
 NODE	= $(TARGET_NODE).cpp
 PEER	= $(TARGET_PEER).cpp
+TEST	= $(TARGET_TEST).cpp
 
 all: $(TARGET_RPC) $(TARGET_NODE) $(TARGET_PEER)
 
@@ -32,6 +34,10 @@ node: $(TARGET_NODE)
 
 peer: $(TARGET_PEER)
 
+test: $(TARGET_TEST)
+
+$(TARGET_TEST): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(TEST)
 
 $(TARGET_RPC): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(RPC)
@@ -51,6 +57,9 @@ cleanOBJ:
 
 clean:
 	rm --recursive --force $(OBJ) $(TARGET_RPC) $(TARGET_NODE) $(TARGET_PEER)
+
+cleanTest:
+	rm -rf $(TARGET_TEST)
 
 rnode1:
 	./pds18-node --id 42 --reg-ipv4 $(IP) --reg-port 8042

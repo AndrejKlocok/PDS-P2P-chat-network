@@ -16,15 +16,14 @@
 
 class PeerStorage;
 
+typedef void (*rpcFunction) (Peer*, json*) ;
+typedef void (*baseFunction) (Peer*, json, Request*) ;
+
 class Peer
 {
 private:
-    typedef void (*argFunction) (Peer*, json*) ;
-    std::map<std::string, argFunction > rpcMap; 
-
-    typedef void (*nodeFunction) (Peer*, json, Request*) ;
-    std::map<std::string, nodeFunction > requestMap; 
-
+    std::map<std::string, rpcFunction > rpcMap; 
+    std::map<std::string, baseFunction > requestMap; 
     PeerArguments* peerArguments;
     Socket* socket;
     Request* requestAddr;
@@ -34,6 +33,8 @@ private:
 public:
     Peer(PeerArguments* args);
     ~Peer();
+    void registerRpcRequest(std::string keyName, rpcFunction func);
+    void registerBaseRequest(std::string keyName, baseFunction func);
     void static peerCommunicator(PeerArguments* args, Peer* peer);
     void setSocket(Socket* socket);
     void disconnectFromNode();

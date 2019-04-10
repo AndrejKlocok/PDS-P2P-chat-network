@@ -48,7 +48,7 @@ void Socket::sendData(json data, Request* req){
     std::string message = benc->encode(data);
 
     sendto(sockfd, message.c_str(), message.length(),  
-        MSG_CONFIRM, (struct sockaddr *) &req->addr, req->addrLen);
+        0, (struct sockaddr *) &req->addr, req->addrLen);
 
 }
 
@@ -58,24 +58,41 @@ json Socket::recvData(){
 
 json Socket::recvData(Request* req){
     std::string recvString;
-    std::vector<char> buff(BUFFER_SIZE);
-    int n;
+    std::vector<char> buff;
+    buff.resize(BUFFER_SIZE);
 
+    int n = 0;
+    int nmod = 0;
     do
     {
-        n = recvfrom(sockfd, &buff[0], BUFFER_SIZE,  
-            0, ( struct sockaddr *) &req->addr, 
+        n = recvfrom(sockfd, buff.data(), buff.size(),  
+            MSG_PEEK, ( struct sockaddr *) &req->addr, 
             &req->addrLen);
         
-        if(n == -1){
-            throw SocketDataExc();
+        nmod = n % BUFFER_SIZE;
+
+        if(n != -1){
+            //if buffer is full resize
+            if(!nmod)
+                buff.resize(n + BUFFER_SIZE);
         }
         else{
-            recvString.append(buff.cbegin(), buff.cend());
+            throw SocketDataExc();
         }
 
-    } while(n == BUFFER_SIZE);
+    } while(nmod == 0);
     
+    //read all data
+    n = recvfrom(sockfd, buff.data(), buff.size(),  
+            0, ( struct sockaddr *) &req->addr, 
+            &req->addrLen);
+    //check error
+    if(n < 0){
+        throw SocketDataExc();
+    }
+    //append string
+    recvString.append(buff.cbegin(), buff.cend());
+
     return benc->decode(recvString);
 }
 

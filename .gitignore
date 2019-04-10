@@ -2,3 +2,5 @@
 pds18-node
 pds18-peer
 pds18-rpc
+*.o
+test*

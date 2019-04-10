@@ -1,12 +1,12 @@
-./build/pds18-rpc --id 1 --peer --command message --from andrej --to anet --message "hello"
-./build/pds18-rpc --id 1 --peer --command getlist
-./build/pds18-rpc --id 1 --peer --command peers
-./build/pds18-rpc --id 1 --peer --command reconnect --reg-ipv4 192.168.1.105 --reg-port 8070
-./build/pds18-rpc --id 42 --node --command connect --reg-ipv4 192.168.1.105 --reg-port 8071
-./build/pds18-rpc --id 42 --node --command disconnect
-./build/pds18-rpc --id 42 --node --command neighbors
-./build/pds18-rpc --id 42 --node --command database
-./build/pds18-rpc --id 42 --node --command sync
+./pds18-rpc --id 1 --peer --command message --from andrej --to anet --message "hello"
+./pds18-rpc --id 1 --peer --command getlist
+./pds18-rpc --id 1 --peer --command peers
+./pds18-rpc --id 1 --peer --command reconnect --reg-ipv4 192.168.1.105 --reg-port 8070
+./pds18-rpc --id 42 --node --command connect --reg-ipv4 192.168.1.105 --reg-port 8043
+./pds18-rpc --id 42 --node --command disconnect
+./pds18-rpc --id 42 --node --command neighbors
+./pds18-rpc --id 42 --node --command database
+./pds18-rpc --id 42 --node --command sync
 
 --peer --command message --from <username1> --to <username2> --message <zpráva>, který se pokusí odeslat chat zprávu
 --peer --command getlist, který vynutí aktualizaci seznamu v síti známých peerů, tj. odešle zprávu GETLIST a nechá si ji potvrdit

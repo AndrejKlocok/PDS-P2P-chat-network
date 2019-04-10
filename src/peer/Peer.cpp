@@ -4,17 +4,6 @@ Peer::Peer(PeerArguments* args)
 {
     this->peerArguments = args;
     this->requestAddr = Socket::createRequest(args->regIpv4, args->regPort);
-
-    rpcMap["getlist"] = onGetList;
-    rpcMap["message"] = onMessage;
-    rpcMap["peers"] = onPeers;
-    rpcMap["reconnect"] = onReconnect;
-
-    requestMap["list"]  = onList;
-    requestMap["error"] = onError;
-    requestMap["ack"]   = onAck;
-    requestMap["message"]   = onMessage;
-
     this->storage = new PeerStorage(this);
 }
 
@@ -25,6 +14,13 @@ Peer::~Peer(){
     this->socket->~Socket();
 }
 
+void Peer::registerRpcRequest(std::string keyName, rpcFunction func){
+    rpcMap[keyName] = func;
+}
+
+void Peer::registerBaseRequest(std::string keyName, baseFunction func){
+    requestMap[keyName] = func;
+}
 
 void Peer::rpcRequest(json request){
 
@@ -84,7 +80,7 @@ void Peer::peerCommunicator(PeerArguments* args, Peer* peer){
             //sleep for 1s
             std::this_thread::sleep_for(std::chrono::seconds(1));
             i++;
-
+        //while hello is not stopped
         } while (!peer->getStorage()->getHello());
         
     }

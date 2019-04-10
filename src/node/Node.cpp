@@ -5,19 +5,6 @@ Node::Node(NodeArguments* args)
     this->storage = new NodeStorage(this);
     this->args = args;
     this->me = args->regIpv4+","+std::to_string(args->regPort);
-
-    rpcMap["database"]     = onDatabase;
-    rpcMap["neighbors"]    = onNeighbors;
-    rpcMap["connect"]      = onConnect;
-    rpcMap["disconnect"]   = onDisconnect;
-    rpcMap["sync"]         = onSync;
-
-    requestMap["hello"]     = onHello; 
-    requestMap["getlist"]   = onGetList;
-    requestMap["error"]     = onError;
-    requestMap["ack"]       = onAck;
-    requestMap["update"]    = onUpdate;
-    requestMap["disconnect"]    = onDisconnect;
 }
 
 Node::~Node(){
@@ -32,6 +19,13 @@ Node::~Node(){
     //notify peers
 }
 
+void Node::registerRpcRequest(std::string keyName, rpcFunction func){
+    rpcMap[keyName] = func;
+}
+
+void Node::registerBaseRequest(std::string keyName, baseFunction func){
+    requestMap[keyName] = func;
+}
 
 void Node::rpcRequest(json* request){
     //find desired action in map of actions

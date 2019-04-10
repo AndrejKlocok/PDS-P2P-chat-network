@@ -17,6 +17,17 @@ void PeerHandle::processRequest(int argc){
     try
     {
         peer = new Peer(&args);
+        peer->registerRpcRequest("sda", onGetList);
+        peer->registerRpcRequest("getlist", onGetList);
+        peer->registerRpcRequest("message", onMessage);
+        peer->registerRpcRequest("peers", onPeers);
+        peer->registerRpcRequest("reconnect", onReconnect);
+
+        peer->registerBaseRequest("list", onList);
+        peer->registerBaseRequest("error", onList);
+        peer->registerBaseRequest("ack", onList);
+        peer->registerBaseRequest("message", onList);
+
         Socket* socket = new Socket(args.chatIpv4, args.chatPort);
         peer->setSocket(socket);
 

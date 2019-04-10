@@ -30,7 +30,6 @@ void onList(Peer* peer, json data, Request* request){
     }
     
     peer->getStorage()->sendMessages(data["peers"]);
-    
 }
 
 void onMessage(Peer* peer, json data, Request* request){

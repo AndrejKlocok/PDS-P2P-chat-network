@@ -19,6 +19,20 @@ void NodeHandle::processRequest(int argc){
     try
     {
         node = new Node(&args);
+
+        node->registerRpcRequest("database", onDatabase);
+        node->registerRpcRequest("neighbors", onNeighbors);
+        node->registerRpcRequest("connect", onConnect);
+        node->registerRpcRequest("disconnect", onDisconnect);
+        node->registerRpcRequest("sync", onSync);
+
+        node->registerBaseRequest("hello", onHello);
+        node->registerBaseRequest("getlist", onGetList);
+        node->registerBaseRequest("error", onError);
+        node->registerBaseRequest("ack", onAck);
+        node->registerBaseRequest("update", onUpdate);
+        node->registerBaseRequest("disconnect", onDisconnect);
+
         Socket* socket = new Socket(args.regIpv4, args.regPort);
         node->setSocket(socket);
         this->pipeName = std::to_string(args.id);
