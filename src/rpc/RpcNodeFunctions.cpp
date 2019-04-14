@@ -112,13 +112,26 @@ void onDisconnect(RpcArguments* arguments, int argc){
  */
 void onSync(RpcArguments* arguments, int argc){
     //last check of valid given args
-    if(argc != 8 || arguments->client != Client::node || arguments->regIpv4.empty()){
+    if(argc != 6 || arguments->client != Client::node){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
     //build json
     json request = {
         {"type", "sync"}
+    };
+
+    sendPipeNodeRequest(arguments->id, request);
+}
+
+void onDump(RpcArguments* arguments, int argc){
+    if(argc != 6 || arguments->client != Client::node){
+        ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
+        return;
+    }
+    //build json
+    json request = {
+        {"type", "dump"}
     };
 
     sendPipeNodeRequest(arguments->id, request);

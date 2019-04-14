@@ -1,15 +1,17 @@
 #include "ErrHandle.h"
 
-ErrHandle::ErrHandle(/* args */)
-{
-}
+ErrHandle::ErrHandle(/* args */){}
 
-ErrHandle::~ErrHandle()
-{
-}
+ErrHandle::~ErrHandle(){}
 
+/**
+ * @brief 
+ * 
+ * @param code  type of error
+ * @param option bonus option
+ */
 void ErrHandle::printErrMessage(ErrCodes code, std::string option){
-    
+    //errcode
     switch (code)
     {
         case ErrCodes::WrongArg :
@@ -18,10 +20,12 @@ void ErrHandle::printErrMessage(ErrCodes code, std::string option){
 
         case ErrCodes::UnknownCmd :
             fprintf(stderr, "Unknown --command %s \n", option.c_str());
-        
+            break;
+
         case ErrCodes::ParseBencodedStringErr :
             fprintf(stderr, "Error (Bdecode) in parsing: %s \n", option.c_str());
-
+            break;
+            
         default:
             break;
     }

@@ -12,7 +12,7 @@ RpcHandle::RpcHandle(/* args */)
     funcMap["connect"]      =   onConnect;
     funcMap["disconnect"]   =   onDisconnect;
     funcMap["sync"]         =   onSync;
-
+    funcMap["dump"]         =   onDump;
 }
 
 RpcHandle::~RpcHandle(){}

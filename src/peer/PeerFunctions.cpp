@@ -21,7 +21,7 @@ void onList(Peer* peer, json data, Request* request){
     peer->sendSocket(ack);
     //look for peers
     if(!data["peers"].is_object())
-        throw CustomException("Exception raised: Protocol not supported peers dictionary not found");
+        throw GlobalException("Exception raised: Protocol not supported peers dictionary not found");
 
     //check what to do
     if(peer->getStorage()->getPeerDist()){

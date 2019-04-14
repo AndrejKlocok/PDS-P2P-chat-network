@@ -2,7 +2,10 @@
 #define NODESTORAGE_H
 
 #include "Node.h"
-
+/**
+ * @brief Peer table entry
+ * 
+ */
 struct PeerRecord
 {
     std::string username;
@@ -11,6 +14,10 @@ struct PeerRecord
     unsigned int timeout;
 };
 
+/**
+ * @brief Node table entry
+ * 
+ */
 struct NodeRecord
 {
     Request* request;
@@ -19,6 +26,10 @@ struct NodeRecord
 };
 
 class Node;
+/**
+ * @brief Node storage class that holds node database
+ * 
+ */
 class NodeStorage
 {
 private:
@@ -28,7 +39,7 @@ private:
     std::vector<std::pair<std::string, unsigned int>> disconectedNeighbors;
     std::vector<unsigned short> acknowledgements;
 
-    std::mutex regUsrsMutex, ackMutex, neighborsMutex;
+    std::mutex regUsrsMutex, ackMutex, neighborsMutex, discNeighborsMutex;
     bool isExc, isDisc;
     unsigned short transactionNumber;
 
@@ -57,6 +68,7 @@ public:
     json getAllPeersRecords();
     void emptyNeighbors();
     void addDiscNeighbor(std::pair<std::string, unsigned int> ip_port);
+    std::vector<std::pair<std::string, unsigned int>> getDiscNeighbors();
 };
 
 #endif // !NODESTORAGE_H

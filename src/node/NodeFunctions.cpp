@@ -1,5 +1,12 @@
 #include "NodeFunctions.h"
 
+/**
+ * @brief Function handles onHello message
+ * 
+ * @param node 
+ * @param data 
+ * @param request 
+ */
 void onHello(Node* node, json data, Request* request){
     PeerRecord* record = new PeerRecord();
 
@@ -10,8 +17,6 @@ void onHello(Node* node, json data, Request* request){
 
     //client disconnected
     if(record->port == 0 && data["ipv4"].is_number()){
-        //timeout
-        //std::cout << "Disconected\n";
         node->getStorage()->incPeerTimer(record->username, 30);
         return;
     }
@@ -26,11 +31,17 @@ void onHello(Node* node, json data, Request* request){
             //wait 1s
             std::this_thread::sleep_for(std::chrono::seconds(1));
         };
-        //std::cout << "Disconected timed out\n";
     }    
 
 }
 
+/**
+ * @brief Function handles onGetList message
+ * 
+ * @param node 
+ * @param data 
+ * @param request 
+ */
 void onGetList(Node* node, json data, Request* request){
     json ack ={
         {"type", "ack"},
@@ -56,10 +67,17 @@ void onGetList(Node* node, json data, Request* request){
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
     if(!node->getStorage()->acknowledge(transactionNumber)){
-        throw CustomException("Exception raised: Getlist, ack %d not received", transactionNumber);
+        throw GlobalException("Exception raised: Getlist, ack %d not received", transactionNumber);
     }
 }
 
+/**
+ * @brief Function handles onUpdate message
+ * 
+ * @param node 
+ * @param data 
+ * @param request 
+ */
 void onUpdate(Node* node, json data, Request* request){
     std::string ipv4 = std::string(inet_ntoa(request->addr.sin_addr));
     unsigned int port = ntohs(request->addr.sin_port);
@@ -70,11 +88,11 @@ void onUpdate(Node* node, json data, Request* request){
     auto ip_port = std::make_pair(ipv4, port);
     json db = data["db"];
 
-    std::string key = ipv4+","+std::to_string(port);
+    std::string aut_key = ipv4+","+std::to_string(port);
     //find autoritaive database and update
     for (json::iterator it = db.begin(); it != db.end(); ++it) {
         //autoritative database
-        if(it.key() == key){
+        if(it.key() == aut_key){
             std::vector<PeerRecord> peers;
             //for each peer ("number")
             if(it.value().is_object()){
@@ -89,7 +107,7 @@ void onUpdate(Node* node, json data, Request* request){
                     }
                     catch(const std::exception& e)
                     {
-                        throw CustomException("Protocol not supported: db entries");
+                        throw GlobalException("Protocol not supported: db entries");
                     }
                 }  
             }
@@ -107,12 +125,19 @@ void onUpdate(Node* node, json data, Request* request){
                 node->connectNode(ipv4_tmp, port_tmp, false);
             }
             else{
-                throw CustomException("Protocol not supported: db entries");
+                throw GlobalException("Protocol not supported: db entries");
             }
         }
     }
 }
 
+/**
+ * @brief Function handles onDisconnect message
+ * 
+ * @param node 
+ * @param data 
+ * @param request 
+ */
 void onDisconnect(Node* node, json data, Request* request){
     json ack ={
         {"type", "ack"},
@@ -126,11 +151,26 @@ void onDisconnect(Node* node, json data, Request* request){
     node->getStorage()->deleteNeighbor(ipv4, port);
 }
 
+/**
+ * @brief Function handles onAck message
+ * 
+ * @param node 
+ * @param data 
+ * @param request 
+ */
 void onAck(Node* node, json data, Request* request){
     int transactionNumber = data["txid"];
+    //store acnkonwledgemet
     node->getStorage()->insertAck(transactionNumber);
 }
 
+/**
+ * @brief Function handles onError message
+ * 
+ * @param node 
+ * @param data 
+ * @param request 
+ */
 void onError(Node* node, json data, Request* request){
     int transactionNumber = data["txid"];
     std::string verbose = data["verbose"];

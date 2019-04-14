@@ -1,15 +1,30 @@
 #include "NodeHandle.h"
 
+/**
+ * @brief Construct a new Node Handle:: Node Handle object
+ * 
+ */
 NodeHandle::NodeHandle(/* args */){}
 
+/**
+ * @brief Destroy the Node Handle:: Node Handle object
+ * 
+ */
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
+    node->disconnect();
     node->getStorage()->setExc();
+
     node->~Node();
     server->~NodeServer();
 }
 
-void NodeHandle::processRequest(int argc){
+/**
+ * @brief Initialize node object 
+ * 
+ * @param argc 
+ */
+void NodeHandle::initNode(int argc){
     if(argc != 7 ){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
@@ -20,12 +35,15 @@ void NodeHandle::processRequest(int argc){
     {
         node = new Node(&args);
 
+        //register RPC functions
         node->registerRpcRequest("database", onDatabase);
         node->registerRpcRequest("neighbors", onNeighbors);
         node->registerRpcRequest("connect", onConnect);
         node->registerRpcRequest("disconnect", onDisconnect);
         node->registerRpcRequest("sync", onSync);
+        node->registerRpcRequest("dump", onDump);
 
+        //register base functions
         node->registerBaseRequest("hello", onHello);
         node->registerBaseRequest("getlist", onGetList);
         node->registerBaseRequest("error", onError);
@@ -33,16 +51,17 @@ void NodeHandle::processRequest(int argc){
         node->registerBaseRequest("update", onUpdate);
         node->registerBaseRequest("disconnect", onDisconnect);
 
+        //set up socket connection
         Socket* socket = new Socket(args.regIpv4, args.regPort);
         node->setSocket(socket);
+        //pipename
         this->pipeName = std::to_string(args.id);
+        //node server
         server = new NodeServer(socket);
-        
-        std::thread rpcThread(rpcServer, node, this->pipeName);
-        
-        server->listen(node); 
 
-        rpcThread.join();
+        std::thread nodeThread(nodeServer, node, server);
+        rpcServer(node, this->pipeName);
+        nodeThread.join();
         
     }
     catch(const std::exception& e)
@@ -51,7 +70,12 @@ void NodeHandle::processRequest(int argc){
         std::cerr << e.what() << '\n';
     }
 }
-
+/**
+ * @brief RPC thread worker function 
+ * 
+ * @param node 
+ * @param pipeName 
+ */
 void NodeHandle::rpcServer(Node* node, std::string pipeName){
     int fd;             //descriptor
     char c;             //char 
@@ -71,7 +95,6 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
             close(fd);
             try
             {
-
                 request = json::parse(buff);
                 std::cout<< "RPC: "<< request.dump()<<std::endl;
                 node->rpcRequest(&request);
@@ -94,15 +117,40 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
     }
     
 }
+/**
+ * @brief Node server thread worker
+ * 
+ * @param node 
+ * @param server 
+ */
+void NodeHandle::nodeServer(Node* node, NodeServer* server){
+    //bind socket
+    server->listen(node); 
+}
 
+/**
+ * @brief Setter
+ * 
+ * @param regPort 
+ */
 void NodeHandle::setRegPort(  unsigned short regPort){
     this->args.regPort = regPort;
 }
 
+/**
+ * @brief Setter
+ * 
+ * @param regIpv4 
+ */
 void NodeHandle::setRegIpv4( std::string regIpv4){
     this->args.regIpv4 = regIpv4;
 }
 
+/**
+ * @brief Setter
+ * 
+ * @param id 
+ */
 void NodeHandle::setId( unsigned short id){
     this->args.id = id;
 }

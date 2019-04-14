@@ -37,20 +37,20 @@ peer: $(TARGET_PEER)
 test: $(TARGET_TEST)
 
 $(TARGET_TEST): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(TEST)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(TEST)
 
 $(TARGET_RPC): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(RPC)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(RPC)
 
 $(TARGET_NODE): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(NODE)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(NODE)
 
 $(TARGET_PEER): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES)  -o $@ $^ $(PEER)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(PEER)
 
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(LIBS_FILES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 cleanOBJ:
 	rm --recursive --force $(OBJ)
@@ -68,13 +68,22 @@ rnode2:
 	./pds18-node --id 43 --reg-ipv4 $(IP) --reg-port 8043
 
 rnode3:
-	./pds18-node --id 44 --reg-ipv4 $(IP)--reg-port 8044
+	./pds18-node --id 44 --reg-ipv4 $(IP) --reg-port 8044
+
+rnode4:
+	./pds18-node --id 45 --reg-ipv4 $(IP) --reg-port 8045
+
+rnode5:
+	./pds18-node --id 46 --reg-ipv4 $(IP) --reg-port 8046
+
+rnode6:
+	./pds18-node --id 47 --reg-ipv4 $(IP) --reg-port 8047
 
 rpeer1:
-	./pds18-peer --id 1 --username andrej --chat-ipv4 $(IP)--chat-port 8081  -reg-ipv4 $(IP) --reg-port 8042
+	./pds18-peer --id 1 --username andrej --chat-ipv4 $(IP) --chat-port 8081  --reg-ipv4 $(IP) --reg-port 8042
 
 rpeer2:
-	./pds18-peer --id 2 --username aneta --chat-ipv4 $(IP)--chat-port 8082  -reg-ipv4 $(IP) --reg-port 8043
+	./pds18-peer --id 2 --username aneta --chat-ipv4 $(IP) --chat-port 8082  --reg-ipv4 $(IP) --reg-port 8043
 
 rpeer3:
-	./pds18-peer --id 3 --username jozef --chat-ipv4 $(IP) --chat-port 8083  -reg-ipv4 $(IP) --reg-port 8044
+	./pds18-peer --id 3 --username jozef --chat-ipv4 $(IP) --chat-port 8083  --reg-ipv4 $(IP) --reg-port 8044

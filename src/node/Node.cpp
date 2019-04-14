@@ -1,5 +1,9 @@
 #include "Node.h"
-
+/**
+ * @brief Construct a new Node:: Node object
+ * 
+ * @param args 
+ */
 Node::Node(NodeArguments* args)
 {
     this->storage = new NodeStorage(this);
@@ -7,26 +11,51 @@ Node::Node(NodeArguments* args)
     this->me = args->regIpv4+","+std::to_string(args->regPort);
 }
 
+/**
+ * @brief Destroy the Node:: Node object
+ * 
+ */
 Node::~Node(){
-    disconnect();
-
-    storage->emptyNeighbors();
-    for( auto it = updateThreads.begin(); it != updateThreads.end(); ++it ) {
-        if(it->second.joinable()){
-            it->second.join();
+    try
+    {
+        storage->emptyNeighbors();
+        for( auto it = updateThreads.begin(); it != updateThreads.end(); ++it ) {
+            if(it->second.joinable()){
+                it->second.join();
+            }
         }
+        //notify peers
     }
-    //notify peers
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
-
+/**
+ * @brief Register new RPC request (rpc function)
+ * 
+ * @param keyName
+ * @param func 
+ */
 void Node::registerRpcRequest(std::string keyName, rpcFunction func){
     rpcMap[keyName] = func;
 }
 
+/**
+ * @brief Register new Base request (node function) for server
+ * 
+ * @param keyName 
+ * @param func 
+ */
 void Node::registerBaseRequest(std::string keyName, baseFunction func){
     requestMap[keyName] = func;
 }
 
+/**
+ * @brief Handle rpc request according to map of rpc functions
+ * 
+ * @param request 
+ */
 void Node::rpcRequest(json* request){
     //find desired action in map of actions
     auto iter = rpcMap.find( (*request)["type"]);
@@ -40,6 +69,12 @@ void Node::rpcRequest(json* request){
     }
 }
 
+/**
+ * @brief Handle base request according to map of node functions
+ * 
+ * @param data 
+ * @param request 
+ */
 void Node::request(json data, Request* request){
 
     //find desired action in map of actions
@@ -54,11 +89,12 @@ void Node::request(json data, Request* request){
     }
 }
 
-NodeStorage* Node::getStorage(){
-    return this->storage;
-}
-
-
+/**
+ * @brief Node`s opdate thread function, that sends evert 4s update msg to specified node
+ * 
+ * @param node object
+ * @param ip_port pair
+ */
 void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
     try
     {   
@@ -84,7 +120,7 @@ void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
 
         } while (node->getStorage()->incNodeTimer(ip_port, 1) && !node->getStorage()->getIsExc()); 
         
-        std::cout<<"Timeout\n";
+        std::cout<<"Timeout-"<<ip_port.second<<"\n";
         
         //if node is disconnecting do nothing else notify that node is disconnected
         if(!node->getStorage()->getIsDisc())
@@ -92,11 +128,32 @@ void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
     }
     catch(const std::exception& e)
     {
-        //node->getStorage()->setExc();
         std::cerr << e.what() << '\n';
     }
 }
 
+/**
+ * @brief Node`s disconnect thread function, that sends disconnect message to neighbor
+ * 
+ * @param node object
+ * @param ip_port pair
+ * @param request structure
+ */
+void Node::nodeDisconnect(Node* node, std::pair<std::string, unsigned int> ip_port, Request* request){
+    json disconnect = {
+        {"type", "disconnect"}
+    };
+    NodeStorage* storage = node->getStorage();
+    disconnect["txid"] = storage->getTransactionNumber(); 
+    storage->deleteNeighbor(ip_port.first, ip_port.second);
+    node->sendSocketWait(disconnect, request);
+}
+
+/**
+ * @brief Method realeases update worker thread
+ * 
+ * @param ip_port pair
+ */
 void Node::releaseThread(std::pair<std::string, unsigned int> ip_port){
     auto iter = updateThreads.find(ip_port);
 
@@ -111,10 +168,19 @@ void Node::releaseThread(std::pair<std::string, unsigned int> ip_port){
         //thread is working, NodeRecord created, but did not existed in connectNode method, thus
         //thread should have stopped already, so this case should not exists
         
-        throw CustomException("Exception raised: Thread realease curruption for%s,%d", ip_port.first.c_str(), ip_port.second);
+        throw LocalException("Exception raised: Thread realease curruption for%s,%d", ip_port.first.c_str(), ip_port.second);
     }
 }
 
+/**
+ * @brief Method tries to make a new neighbor with node, according to given parameters
+ * 
+ * @param ipv4 string
+ * @param port number
+ * @param authority 
+ * @return true neighbor created
+ * @return false already connected
+ */
 bool Node::connectNode(std::string ipv4, unsigned int port, bool authority){
     auto ip_port = std::make_pair(ipv4, port);
     
@@ -135,23 +201,45 @@ bool Node::connectNode(std::string ipv4, unsigned int port, bool authority){
     }
 }
 
+/**
+ * @brief Disconnect node from other neighbors
+ * 
+ */
 void Node::disconnect(){
-    json disconnect = {
-        {"type", "disconnect"}
-    };
     storage->setDisc(true);
+
+    std::vector<std::thread> threads_disconnect;
+
+    //spawn disconnect threads
     for(auto neighbor : storage->getNeighbors())
     {  
-        disconnect["txid"] = storage->getTransactionNumber(); 
-        storage->deleteNeighbor(neighbor.first.first, neighbor.first.second);
-        sendSocket(disconnect, neighbor.second->request);
+        std::thread th (nodeDisconnect, this, neighbor.first, neighbor.second->request);
+        threads_disconnect.push_back(std::move(th));
+    }
+
+    //join them
+    for(std::thread &th : threads_disconnect)
+    {
+        th.join();
     }
 }
 
+/**
+ * @brief Send data with stored socket
+ * 
+ * @param data json
+ * @param req structure
+ */
 void Node::sendSocket(json data, Request* req){
     socket->sendData(data, req);
 }
 
+/**
+ * @brief Send data with stored socket with maximum effort (3x)
+ * 
+ * @param data 
+ * @param req 
+ */
 void Node::sendSocketWait(json data, Request* req){
     int ackNumber = data["txid"];
     socket->sendData(data, req);
@@ -160,19 +248,43 @@ void Node::sendSocketWait(json data, Request* req){
     for(int i = 0; i < 2; i++){
         std::this_thread::sleep_for(std::chrono::seconds(2));
         if(storage->acknowledge(ackNumber))
-            break;
+            return;
         socket->sendData(data, req);
-    }   
+    } 
 }
 
+/**
+ * @brief Return node storage object
+ * 
+ * @return NodeStorage* 
+ */
+NodeStorage* Node::getStorage(){
+    return this->storage;
+}
+
+/**
+ * @brief Return socket object
+ * 
+ * @param socket 
+ */
 void Node::setSocket(Socket* socket){
     this->socket = socket;
 }
 
+/**
+ * @brief Return arguments
+ * 
+ * @return NodeArguments* 
+ */
 NodeArguments* Node::getArguments(){
     return args;
 }
 
+/**
+ * @brief Return node identification
+ * 
+ * @return std::string 
+ */
 std::string Node::getMe(){
     return me;
 }

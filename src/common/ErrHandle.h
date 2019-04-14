@@ -6,7 +6,10 @@
 
 enum class ErrCodes {WrongArg, UnknownCmd, ParseBencodedStringErr };
 
-
+/**
+ * @brief Error handler
+ * 
+ */
 class ErrHandle
 {
 private:

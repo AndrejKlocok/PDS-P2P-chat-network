@@ -21,7 +21,7 @@ void onConnect(Node* node, json* data){
     node->getStorage()->setDisc(false);
     // try to connect to node - authority is true
     if(!node->connectNode(ipv4, port, true)){
-        throw CustomException("Already connected to %s,%d", ipv4.c_str(), port);
+        throw LocalException("Already connected to %s,%d", ipv4.c_str(), port);
     }
 }
 
@@ -40,4 +40,19 @@ void onSync(Node* node, json* data){
         update["txid"] = node->getStorage()->getTransactionNumber();
         node->sendSocket(update, neighbor.second->request);
     } 
+}
+
+void onDump(Node* node, json* data){
+    std::cout << "DISCONECTED NEIGHBORS" << '\n';
+    for(auto var : node->getStorage()->getDiscNeighbors())
+    {
+        std::cout << "IP: " << var.first <<" Port:" <<var.second << '\n';
+    }
+
+    std::cout << "NEIGHBORS" << '\n';
+    for(auto var : node->getStorage()->getNeighbors())
+    {
+        std::cout << "IP: " << var.first.first <<" Port:" <<var.first.second << '\n';
+        std::cout << "Timeout: " << var.second->timeout << '\n';
+    }
 }

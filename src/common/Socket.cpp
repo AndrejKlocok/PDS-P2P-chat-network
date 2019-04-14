@@ -1,5 +1,11 @@
 #include "Socket.h"
 
+/**
+ * @brief Construct a new Socket:: Socket object
+ * 
+ * @param IP  ipv4 string
+ * @param port  port number
+ */
 Socket::Socket(std::string IP, unsigned short port){
     benc = new Bencoder();
     request = Socket::createRequest(IP, port);
@@ -10,10 +16,18 @@ Socket::Socket(std::string IP, unsigned short port){
     }
 }
 
+/**
+ * @brief Destroy the Socket:: Socket object
+ * 
+ */
 Socket::~Socket(){
     close(sockfd);
 }
 
+/**
+ * @brief Bind socket to the port
+ * 
+ */
 void Socket::bindSocket(){
     if ( bind(sockfd, (const struct sockaddr *)& request->addr,  
             sizeof(request->addr)) < 0 ) 
@@ -22,6 +36,10 @@ void Socket::bindSocket(){
     } 
 }
 
+/**
+ * @brief Set flag reuse port
+ * 
+ */
 void Socket::setReusePort(){
     int on = 1;
     if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on)) <0){
@@ -29,6 +47,10 @@ void Socket::setReusePort(){
     }
 }
 
+/**
+ * @brief Set 2second timeout on socket
+ * 
+ */
 void Socket::setTimeout2s(){
     //set timeout
     struct timeval timeout;
@@ -40,10 +62,21 @@ void Socket::setTimeout2s(){
     }
 }
 
+/**
+ * @brief Send data with stored request
+ * 
+ * @param data json object
+ */
 void Socket::sendData(json data){
     return sendData(data, request);
 }
 
+/**
+ * @brief Send data to given address via request struct
+ * 
+ * @param data json object
+ * @param req struct
+ */
 void Socket::sendData(json data, Request* req){
     std::string message = benc->encode(data);
 
@@ -52,10 +85,21 @@ void Socket::sendData(json data, Request* req){
 
 }
 
+/**
+ * @brief Receive data from socket
+ * 
+ * @return json 
+ */
 json Socket::recvData(){
     return recvData(request);
 }
 
+/**
+ * @brief Receive data from socket and initialize request structure
+ * 
+ * @param req structure
+ * @return json object
+ */
 json Socket::recvData(Request* req){
     std::string recvString;
     std::vector<char> buff;
@@ -96,10 +140,22 @@ json Socket::recvData(Request* req){
     return benc->decode(recvString);
 }
 
+/**
+ * @brief Return request structure
+ * 
+ * @return Request* 
+ */
 Request* Socket::getRequest(){
     return request;
 }
 
+/**
+ * @brief Create Request structure
+ * 
+ * @param IP string
+ * @param port number
+ * @return Request* structure
+ */
 Request* Socket::createRequest(std::string IP, unsigned short port){
     Request* req = new Request();
 

@@ -24,6 +24,7 @@ private:
     std::string pipeName;
     NodeServer* server;
     Node* node;
+    
 public:
     NodeHandle(/* args */);
     ~NodeHandle();
@@ -31,8 +32,9 @@ public:
     void setRegIpv4( std::string regIpv4);
     void setId( unsigned short id);
 
-    void processRequest(int argc);
+    void initNode(int argc);
     void static rpcServer(Node* node, std::string pipeName);
+    void static nodeServer(Node* node, NodeServer* server);
 };
 
 #endif // !NODEHANDLE_H

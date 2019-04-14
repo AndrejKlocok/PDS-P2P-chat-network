@@ -23,7 +23,7 @@ void  PeerServer::worker(Peer* peer, Request* req, json data){
        peer->request(data, req); 
    }
    //send back custom exception, f.e. ack not found
-   catch(const CustomException& e)
+   catch(const GlobalException& e)
    {
         std::cerr << e.what() << '\n';
         json error = {

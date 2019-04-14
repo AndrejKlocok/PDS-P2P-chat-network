@@ -72,7 +72,7 @@ int main(int argc, char** argv)
         }
     }
 
-    nodeHandle->processRequest(argc);
+    nodeHandle->initNode(argc);
 
     return 0;
 }

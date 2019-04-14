@@ -6,6 +6,10 @@
 #include "common/Socket.h"
 #include "Node.h"
 
+/**
+ * @brief Node server abstraction class
+ * 
+ */
 class NodeServer
 {
 private:

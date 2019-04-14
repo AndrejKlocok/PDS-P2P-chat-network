@@ -23,7 +23,7 @@ void  NodeServer::worker(Node* node, Request* req, json data){
         node->request(data, req);
     }
     //send back custom exception, f.e. ack not found
-    catch(const CustomException& e)
+    catch(const GlobalException& e)
     {
             std::cerr << e.what() << '\n';
             json error = {
@@ -41,12 +41,12 @@ void  NodeServer::worker(Node* node, Request* req, json data){
 }
 
 void NodeServer::listen(Node* node){
-
-    Request* req = new Request();
-    req->addrLen = sizeof(struct sockaddr_in);
     try{
         //rpc loop while exception does not occur
         do{
+            Request* req = new Request();
+            req->addrLen = sizeof(struct sockaddr_in);
+
             json recvData = socket->recvData(req);
             std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
             std::cout << recvData.dump() << std::endl;

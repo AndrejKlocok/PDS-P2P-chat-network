@@ -14,5 +14,6 @@ void onNeighbors(RpcArguments* arguments, int argc);
 void onConnect(RpcArguments* arguments, int argc);
 void onDisconnect(RpcArguments* arguments, int argc);
 void onSync(RpcArguments* arguments, int argc);
+void onDump(RpcArguments* arguments, int argc);
 
 #endif // !RPCNODEFUNCTIONS_H

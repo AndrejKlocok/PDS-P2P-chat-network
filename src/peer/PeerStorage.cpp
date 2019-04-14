@@ -31,7 +31,7 @@ void PeerStorage::sendMessages(json peers){
     }
     //Message was not sent
     std::string to = msg["to"];
-    throw PeerNotFoundException("Exception raised: %s is not accessible", to.c_str());
+    throw LocalException("Exception raised: %s is not accessible", to.c_str());
 }
 
 json PeerStorage::getFrontMessage(){
@@ -76,7 +76,7 @@ void PeerStorage::waitAck(int ackNumber){
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
      if(!acknowledge(ackNumber)){
-        throw CustomException("Exception raised: ack %d not received", ackNumber);
+        throw GlobalException("Exception raised: ack %d not received", ackNumber);
     }
 }
 

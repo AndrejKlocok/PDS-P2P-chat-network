@@ -20,6 +20,10 @@ class NodeStorage;
 typedef void (*baseFunction) (Node*, json, Request*);
 typedef void (*rpcFunction) (Node*, json*);
 
+/**
+ * @brief Node abstraction class
+ * 
+ */
 class Node
 {
 private:
@@ -42,6 +46,7 @@ public:
     void request(json data, Request* request);
     void sendSocket(json data, Request* req);
     void static nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port);
+    void static nodeDisconnect(Node* node, std::pair<std::string, unsigned int> ip_port, Request* request);
     NodeStorage* getStorage();
     void setSocket(Socket* socket);
     void sendSocketWait(json data, Request* req);

@@ -15,13 +15,20 @@
 
 #define BUFFER_SIZE 1024
 
-
+/**
+ * @brief Structure that holds sockaddr_in
+ * 
+ */
 struct Request
 {
     struct sockaddr_in addr;
     socklen_t addrLen;
 };
 
+/**
+ * @brief Socket abstraction class
+ * 
+ */
 class Socket
 {
 protected:

@@ -24,9 +24,9 @@ void PeerHandle::processRequest(int argc){
         peer->registerRpcRequest("reconnect", onReconnect);
 
         peer->registerBaseRequest("list", onList);
-        peer->registerBaseRequest("error", onList);
-        peer->registerBaseRequest("ack", onList);
-        peer->registerBaseRequest("message", onList);
+        peer->registerBaseRequest("error", onError);
+        peer->registerBaseRequest("ack", onAck);
+        peer->registerBaseRequest("message", onMessage);
 
         Socket* socket = new Socket(args.chatIpv4, args.chatPort);
         peer->setSocket(socket);

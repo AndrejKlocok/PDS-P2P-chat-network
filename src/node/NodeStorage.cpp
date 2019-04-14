@@ -89,12 +89,13 @@ json NodeStorage::getAllPeersRecords(){
 bool NodeStorage::addNeighbor(std::string ipv4, unsigned int port, bool authority){
     auto ip_port = std::make_pair(ipv4, port);
     
-    std::scoped_lock(neighborsMutex);
     //node was disconnected from neighborhood
     auto iter_disc = std::find(disconectedNeighbors.begin(), disconectedNeighbors.end(), ip_port);
     if(iter_disc != disconectedNeighbors.end()){
         //authority is true - connecting to author
         if(authority){
+            //lock
+            std::scoped_lock(discNeighborsMutex);
             disconectedNeighbors.erase(iter_disc);
         }
         //authority is false - connecting to neighbor
@@ -102,28 +103,36 @@ bool NodeStorage::addNeighbor(std::string ipv4, unsigned int port, bool authorit
             return false;
     }
 
-    
     auto iter = neighbors.find(ip_port);
 
-    //if user is connected
+    //if user is connected reset
     if(iter != neighbors.end()){ 
+
+         if(authority){
+            std::scoped_lock(neighborsMutex);
+            std::cout << iter->first.second<< "-" << iter->second->timeout << '\n';
+            iter->second->timeout = 0;  
+        }
         return false;
     }
+
+    std::scoped_lock(neighborsMutex);
+
     NodeRecord* record = new NodeRecord();
     record->request = Socket::createRequest(ipv4, port);
     record->timeout = 0;
-    //record->peers = nullptr;
 
     this->neighbors[ip_port] = record;
     return true;
 }
 
 bool NodeStorage::incNodeTimer(std::pair<std::string, unsigned int> ip_port, int time){
-    std::scoped_lock(neighborsMutex);
+    
     auto iter = neighbors.find(ip_port);
-
     if(iter != neighbors.end()){
         if(iter->second->timeout > 12){
+            //std::cout << "Timer-"<<ip_port.second<<"- is: "<< iter->second->timeout << '\n';
+            std::scoped_lock(neighborsMutex);
             this->neighbors.erase(iter);
             return false;
         }
@@ -136,14 +145,15 @@ bool NodeStorage::incNodeTimer(std::pair<std::string, unsigned int> ip_port, int
 bool NodeStorage::deleteNeighbor(std::string ipv4, unsigned int port){
     auto ip_port = std::make_pair(ipv4, port);
     
-    std::scoped_lock(neighborsMutex); 
     auto iter = neighbors.find(ip_port);
 
     //if user is connected
     if(iter != neighbors.end()){
         //if node is disconnecting do nothing else notify that node is disconnected
-        if(!getIsDisc())
+        if(!getIsDisc()){
             addDiscNeighbor(ip_port);
+        }
+        std::scoped_lock(neighborsMutex); 
         neighbors.erase(iter);
         return true;
     }
@@ -161,10 +171,9 @@ std::map<std::pair<std::string, unsigned int>, NodeRecord*> NodeStorage::getNeig
 
 void NodeStorage::updateNeighborsPeers(std::pair<std::string, unsigned int> ip_port, std::vector<PeerRecord> peers){
     
-    std::scoped_lock(neighborsMutex);
     auto iter = neighbors.find(ip_port);
     if(iter != neighbors.end()){ 
-        iter->second->timeout = 0;
+        std::scoped_lock(neighborsMutex);
         iter->second->peers = peers;   
     }
 }
@@ -244,6 +253,7 @@ void NodeStorage::addDiscNeighbor(std::pair<std::string, unsigned int> ip_port){
     
     //disc neighbor is not in vector (no duplicates...)
     if(iter_disc == disconectedNeighbors.end()){
+        std::scoped_lock(discNeighborsMutex); 
          disconectedNeighbors.push_back(ip_port);
     }
 }
@@ -267,4 +277,8 @@ void NodeStorage::setDisc(bool disc){
 
 bool NodeStorage::getIsDisc(){
     return isDisc;
+}
+
+std::vector<std::pair<std::string, unsigned int>> NodeStorage::getDiscNeighbors(){
+    return disconectedNeighbors;
 }

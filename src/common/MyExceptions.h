@@ -53,14 +53,6 @@ struct UnknownType : public std::exception
     }
 };
 
-struct NodeWrongId : public std::exception
-{
-	const char * what () const throw ()
-    {
-    	return "Exception raised: txid";
-    }
-};
-
 struct PeerMsgEmpty : public std::exception
 {
 	const char * what () const throw ()
@@ -69,11 +61,15 @@ struct PeerMsgEmpty : public std::exception
     }
 };
 
-struct PeerNotFoundException : std::exception
+/**
+ * @brief Exception handled locally
+ * 
+ */
+struct LocalException : std::exception
 {
     char text[1024];
 
-    PeerNotFoundException(char const* fmt, ...) __attribute__((format(printf,2,3))) {
+    LocalException(char const* fmt, ...) __attribute__((format(printf,2,3))) {
         va_list ap;
         va_start(ap, fmt);
         vsnprintf(text, sizeof text, fmt, ap);
@@ -83,11 +79,15 @@ struct PeerNotFoundException : std::exception
     char const* what() const throw() { return text; }
 };
 
-struct CustomException : std::exception
+/**
+ * @brief Exception handled globally, resends to other nodes
+ * 
+ */
+struct GlobalException : std::exception
 {
     char text[1024];
 
-    CustomException(char const* fmt, ...) __attribute__((format(printf,2,3))) {
+    GlobalException(char const* fmt, ...) __attribute__((format(printf,2,3))) {
         va_list ap;
         va_start(ap, fmt);
         vsnprintf(text, sizeof text, fmt, ap);

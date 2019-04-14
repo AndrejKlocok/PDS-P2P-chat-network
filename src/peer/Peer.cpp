@@ -130,7 +130,7 @@ void Peer::sendSocketWait(json data, Request* req){
     for(int i = 0; i < 2; i++){
         std::this_thread::sleep_for(std::chrono::seconds(2));
         if(storage->acknowledge(ackNumber))
-            break;
+            return;
         socket->sendData(data, req);
     }   
 }
