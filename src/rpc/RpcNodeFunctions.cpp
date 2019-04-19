@@ -123,16 +123,3 @@ void onSync(RpcArguments* arguments, int argc){
 
     sendPipeNodeRequest(arguments->id, request);
 }
-
-void onDump(RpcArguments* arguments, int argc){
-    if(argc != 6 || arguments->client != Client::node){
-        ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
-        return;
-    }
-    //build json
-    json request = {
-        {"type", "dump"}
-    };
-
-    sendPipeNodeRequest(arguments->id, request);
-}

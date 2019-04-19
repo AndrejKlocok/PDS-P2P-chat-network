@@ -41,18 +41,3 @@ void onSync(Node* node, json* data){
         node->sendSocket(update, neighbor.second->request);
     } 
 }
-
-void onDump(Node* node, json* data){
-    std::cout << "DISCONECTED NEIGHBORS" << '\n';
-    for(auto var : node->getStorage()->getDiscNeighbors())
-    {
-        std::cout << "IP: " << var.first <<" Port:" <<var.second << '\n';
-    }
-
-    std::cout << "NEIGHBORS" << '\n';
-    for(auto var : node->getStorage()->getNeighbors())
-    {
-        std::cout << "IP: " << var.first.first <<" Port:" <<var.first.second << '\n';
-        std::cout << "Timeout: " << var.second->timeout << '\n';
-    }
-}

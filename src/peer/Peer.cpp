@@ -97,7 +97,7 @@ void Peer::disconnectFromNode(){
             {"type", "hello"},
             {"txid", storage->getTransactionNumber()},
             {"username", peerArguments->username},
-            {"ipv4", 0},
+            {"ipv4", "0.0.0.0"},
             {"port", 0}
         };
     sendSocket(request);
@@ -132,7 +132,8 @@ void Peer::sendSocketWait(json data, Request* req){
         if(storage->acknowledge(ackNumber))
             return;
         socket->sendData(data, req);
-    }   
+    }
+    throw LocalException("Exception raised: Send data timeout");
 }
 
 void Peer::runCommunicator(){

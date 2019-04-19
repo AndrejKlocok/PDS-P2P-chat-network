@@ -1,6 +1,6 @@
 SRC_DIR  	= src
 LIBS_DIR	= libs
-IP = 192.168.1.105
+IP = 192.168.2.95
 
 
 # Set of src/inc files used in build process
@@ -83,7 +83,10 @@ rpeer1:
 	./pds18-peer --id 1 --username andrej --chat-ipv4 $(IP) --chat-port 8081  --reg-ipv4 $(IP) --reg-port 8042
 
 rpeer2:
-	./pds18-peer --id 2 --username aneta --chat-ipv4 $(IP) --chat-port 8082  --reg-ipv4 $(IP) --reg-port 8043
+	./pds18-peer --id 2 --username aneta --chat-ipv4 $(IP) --chat-port 8082  --reg-ipv4 $(IP) --reg-port 8042
 
 rpeer3:
-	./pds18-peer --id 3 --username jozef --chat-ipv4 $(IP) --chat-port 8083  --reg-ipv4 $(IP) --reg-port 8044
+	./pds18-peer --id 3 --username jozef --chat-ipv4 $(IP) --chat-port 8083  --reg-ipv4 $(IP) --reg-port 8042
+
+rpeerMerlin:
+	./pds18-peer --id 4 --username merlin --chat-ipv4 $(IP) --chat-port 8083  --reg-ipv4 147.229.176.19 --reg-port 8042

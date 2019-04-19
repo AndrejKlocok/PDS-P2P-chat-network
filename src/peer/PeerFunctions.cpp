@@ -18,7 +18,7 @@ void onList(Peer* peer, json data, Request* request){
         {"txid", data["txid"]}
     };
     //send ack
-    peer->sendSocket(ack);
+    peer->sendSocket(ack, request);
     //look for peers
     if(!data["peers"].is_object())
         throw GlobalException("Exception raised: Protocol not supported peers dictionary not found");

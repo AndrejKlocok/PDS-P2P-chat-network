@@ -232,6 +232,7 @@ void NodeStorage::insertAck(unsigned short txid){
 }
 
 bool NodeStorage::isPeerLoggedIn(std::string ip, unsigned short port){
+    
     for( std::map<std::string, PeerRecord*>::iterator it = users_registerd.begin(); it != users_registerd.end(); ++it )
         if(it->second->ip == ip && it->second->port == port)
             return true;

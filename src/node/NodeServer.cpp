@@ -22,7 +22,7 @@ void  NodeServer::worker(Node* node, Request* req, json data){
     {
         node->request(data, req);
     }
-    //send back custom exception, f.e. ack not found
+
     catch(const GlobalException& e)
     {
             std::cerr << e.what() << '\n';
@@ -42,7 +42,6 @@ void  NodeServer::worker(Node* node, Request* req, json data){
 
 void NodeServer::listen(Node* node){
     try{
-        //rpc loop while exception does not occur
         do{
             Request* req = new Request();
             req->addrLen = sizeof(struct sockaddr_in);
@@ -53,6 +52,18 @@ void NodeServer::listen(Node* node){
             
             //spawn thread
             threads.push_back(std::thread(worker, node, req, recvData));
+            /*
+            if(threads.size() > 10){
+                std::cout << "Joining threads start" << '\n';
+                for(auto it = threads.begin(); it != threads.end(); it++)    {
+                    //join and erase
+                    if(it->joinable()){
+                        it->join();
+                        threads.erase(it);
+                    }
+                }
+                std::cout << "Joined to " << threads.size() << '\n';
+            }*/
 
         } while (!node->getStorage()->getIsExc());
     }

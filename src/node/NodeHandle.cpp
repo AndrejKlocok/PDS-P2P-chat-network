@@ -41,7 +41,6 @@ void NodeHandle::initNode(int argc){
         node->registerRpcRequest("connect", onConnect);
         node->registerRpcRequest("disconnect", onDisconnect);
         node->registerRpcRequest("sync", onSync);
-        node->registerRpcRequest("dump", onDump);
 
         //register base functions
         node->registerBaseRequest("hello", onHello);

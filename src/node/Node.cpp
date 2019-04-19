@@ -251,6 +251,7 @@ void Node::sendSocketWait(json data, Request* req){
             return;
         socket->sendData(data, req);
     } 
+    throw GlobalException("Exception raised: Send data timeout");
 }
 
 /**

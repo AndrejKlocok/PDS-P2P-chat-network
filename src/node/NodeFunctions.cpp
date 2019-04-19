@@ -16,7 +16,7 @@ void onHello(Node* node, json data, Request* request){
 
 
     //client disconnected
-    if(record->port == 0 && data["ipv4"].is_number()){
+    if(record->port == 0 && data["ipv4"] == "0.0.0.0"){
         node->getStorage()->incPeerTimer(record->username, 30);
         return;
     }
@@ -48,8 +48,9 @@ void onGetList(Node* node, json data, Request* request){
         {"txid", data["txid"]}
     };
     //if peer is not connected ignore
-    if(!node->getStorage()->isPeerLoggedIn(inet_ntoa(request->addr.sin_addr), ntohs(request->addr.sin_port)))
-        return;
+    if(!node->getStorage()->isPeerLoggedIn(inet_ntoa(request->addr.sin_addr), ntohs(request->addr.sin_port))){
+        throw GlobalException("Exception raised: Requestor %s:%d is not registered, Ignore", inet_ntoa(request->addr.sin_addr), ntohs(request->addr.sin_port));
+    }
     
     //send ack
     node->sendSocket(ack, request);
@@ -62,13 +63,7 @@ void onGetList(Node* node, json data, Request* request){
         {"txid", transactionNumber},
         {"peers", peerRecords}
     };
-    node->sendSocket(listMsg, request);
-    //wait for ack
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-
-    if(!node->getStorage()->acknowledge(transactionNumber)){
-        throw GlobalException("Exception raised: Getlist, ack %d not received", transactionNumber);
-    }
+    node->sendSocketWait(listMsg, request);
 }
 
 /**
