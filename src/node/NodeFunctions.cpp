@@ -25,7 +25,6 @@ void onHello(Node* node, json data, Request* request){
 
     //if new record is created run timer
     if(node->getStorage()->addNewLocalPeer(record)){
-        //std::cout << "New client\n";
         //timer will tick till it is > 30 or user logs out
         while(node->getStorage()->incPeerTimer(record->username, 1) && !node->getStorage()->getIsExc()){ 
             //wait 1s

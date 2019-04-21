@@ -10,6 +10,8 @@
 #include <string>
 #include <map>
 #include <thread>
+#include <sstream>
+#include <fstream>
 
 #include "common/ErrHandle.h"
 
@@ -34,7 +36,7 @@ public:
 
     void initNode(int argc);
     void static rpcServer(Node* node, std::string pipeName);
-    void static nodeServer(Node* node, NodeServer* server);
+    void static nodeServer(Node* node, NodeServer* server, int threadsNumb);
 };
 
 #endif // !NODEHANDLE_H

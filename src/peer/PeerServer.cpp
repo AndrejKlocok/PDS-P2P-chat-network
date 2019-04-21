@@ -8,19 +8,13 @@ PeerServer::PeerServer(Socket* socket)
 
 PeerServer::~PeerServer()
 {
-        //join threads
-    for (size_t i = 0; i < threads.size(); i++) {
-        if(threads.at(i).joinable()){
-            threads.at(i).join();
-        }
-    }
-    //this->socket->~Socket();
+    this->socket->~Socket();
 }
 
-void  PeerServer::worker(Peer* peer, Request* req, json data){
+void  worker(int id, PeerWork* work){
    try
    {
-       peer->request(data, req); 
+       work->peer->request(work->data, work->req); 
    }
    //send back custom exception, f.e. ack not found
    catch(const GlobalException& e)
@@ -28,10 +22,10 @@ void  PeerServer::worker(Peer* peer, Request* req, json data){
         std::cerr << e.what() << '\n';
         json error = {
             {"type", "error"},
-            {"txid", peer->getStorage()->getTransactionNumber()},
+            {"txid", work->peer->getStorage()->getTransactionNumber()},
             {"verbose", e.what()}
         };
-        peer->sendSocket(error, req);
+        work->peer->sendSocket(error, work->req);
    }
    catch(const PeerMsgEmpty& e){}
    catch(const std::exception& e)
@@ -41,18 +35,24 @@ void  PeerServer::worker(Peer* peer, Request* req, json data){
 
 }
 
-void PeerServer::listen(Peer* peer){
+void PeerServer::listen(Peer* peer, int threadPoolSize){
 
-    Request* req = new Request();
-    req->addrLen = sizeof(struct sockaddr_in);
+    
     try{
-        //rpc loop while exception does not occur
+        ctpl::thread_pool p(threadPoolSize);
         do{
+            Request* req = new Request();
+            req->addrLen = sizeof(struct sockaddr_in);          
             json recvData = socket->recvData(req);
             std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
             std::cout << recvData.dump() << std::endl;
-            //spawn thread
-            threads.push_back(std::thread(worker, peer, req, recvData));
+            
+            PeerWork* work = new PeerWork();
+            work->peer = peer;
+            work->req = req;
+            work->data = recvData;
+
+            p.push(worker, work);
 
         } while (!peer->getStorage()->getIsExc());
     }

@@ -1,8 +1,26 @@
 #include "RpcFunctions.h"
 
 void onDatabase(Node* node, json* data){
-    json peerRecords = node->getStorage()->getAllPeersRecords();
-    std::cout<<peerRecords.dump(2)<<std::endl;
+    
+    
+    std::cout << "------------<Database>------------" << '\n';
+    auto local = node->getStorage()->getUsersRegistered();
+    for(auto peer : local)
+    {
+        std::cout << peer.first<<","<<peer.second->ip<<":"<<peer.second->port << '\n';
+    }
+    std::cout << "----------<Other nodes>-----------" << '\n';
+    auto neighbors = node->getStorage()->getNeighbors();
+    for(auto neighbor : neighbors)
+    {
+        std::cout << "Node:" <<neighbor.first.first <<":"<<neighbor.first.second<< '\n';
+        for(auto peer : neighbor.second->peers)
+        {
+            std::cout << "\t"<< peer.username << ", " << peer.ip<<":"<<peer.port << '\n';
+        }
+        
+    }
+    std::cout << "----------------------------------" << '\n';
 }
 
 void onNeighbors(Node* node, json* data){

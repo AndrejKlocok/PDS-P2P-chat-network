@@ -25,18 +25,40 @@ void onList(Peer* peer, json data, Request* request){
 
     //check what to do
     if(peer->getStorage()->getPeerDist()){
-        std::cout<<data.dump(2)<<std::endl;
+        try
+        {
+            std::cout << "PEERS" << '\n';
+            json db = data["peers"];
+            for (json::iterator it = db.begin(); it != db.end(); ++it){
+                std::cout << std::string(it.value()["username"]) <<","<< std::string(it.value()["ipv4"])<<":"<<it.value()["port"] << '\n';
+                
+            }
+        }
+        catch(const std::exception& e)
+        {
+            throw GlobalException("Exception raised: Wrong protocol structure");
+        }
+        
         peer->getStorage()->setPeerDisp(false);
     }
     
     peer->getStorage()->sendMessages(data["peers"]);
 }
 
-void onMessage(Peer* peer, json data, Request* request){
+void onMessage(Peer* peer, json data, Request* request){    
     json ack ={
         {"type", "ack"},
         {"txid", data["txid"]}
     };
     peer->sendSocket(ack, request);
-    std::cout<<data.dump(2)<<std::endl;
+    
+    try
+    {
+        std::cout << "New message from: "<<data["from"] << '\n';
+        std::cout << data["message"] << '\n';
+    }
+    catch(const std::exception& e)
+    {
+        throw GlobalException("Exception raised: Wrong protocol structure");
+    }
 }

@@ -120,7 +120,6 @@ void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
 
         } while (node->getStorage()->incNodeTimer(ip_port, 1) && !node->getStorage()->getIsExc()); 
         
-        std::cout<<"Timeout-"<<ip_port.second<<"\n";
         
         //if node is disconnecting do nothing else notify that node is disconnected
         if(!node->getStorage()->getIsDisc())

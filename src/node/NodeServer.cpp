@@ -8,19 +8,13 @@ NodeServer::NodeServer(Socket* socket)
 
 NodeServer::~NodeServer()
 {
-    //join threads
-    for (size_t i = 0; i < threads.size(); i++) {
-        if(threads.at(i).joinable()){
-            threads.at(i).join();
-        }
-    }
     this->socket->~Socket();
 }
 
-void  NodeServer::worker(Node* node, Request* req, json data){    
+void worker(int id, NodeWork* work){    
     try
     {
-        node->request(data, req);
+        work->node->request(work->data, work->req);
     }
 
     catch(const GlobalException& e)
@@ -28,20 +22,21 @@ void  NodeServer::worker(Node* node, Request* req, json data){
             std::cerr << e.what() << '\n';
             json error = {
                 {"type", "error"},
-                {"txid", node->getStorage()->getTransactionNumber()},
+                {"txid", work->node->getStorage()->getTransactionNumber()},
                 {"verbose", e.what()}
             };
-            node->sendSocket(error, req);
+            work->node->sendSocket(error, work->req);
     }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
     }
-
 }
 
-void NodeServer::listen(Node* node){
+
+void NodeServer::listen(Node* node, int threadPoolSize){
     try{
+        ctpl::thread_pool p(threadPoolSize);
         do{
             Request* req = new Request();
             req->addrLen = sizeof(struct sockaddr_in);
@@ -50,20 +45,13 @@ void NodeServer::listen(Node* node){
             std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
             std::cout << recvData.dump() << std::endl;
             
-            //spawn thread
-            threads.push_back(std::thread(worker, node, req, recvData));
-            /*
-            if(threads.size() > 10){
-                std::cout << "Joining threads start" << '\n';
-                for(auto it = threads.begin(); it != threads.end(); it++)    {
-                    //join and erase
-                    if(it->joinable()){
-                        it->join();
-                        threads.erase(it);
-                    }
-                }
-                std::cout << "Joined to " << threads.size() << '\n';
-            }*/
+            NodeWork* work = new NodeWork();
+            work->node = node;
+            work->req = req;
+            work->data = recvData;
+
+            
+            p.push(worker, work);
 
         } while (!node->getStorage()->getIsExc());
     }

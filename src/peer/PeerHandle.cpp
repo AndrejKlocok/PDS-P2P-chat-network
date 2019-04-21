@@ -12,10 +12,28 @@ void PeerHandle::processRequest(int argc){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
-    // --id <identifikátor> --username <user> --chat-ipv4 <IP> --chat-port <port> --reg-ipv4 <IP> --reg-port <port>
-    std::cout<<"IP: " << args.chatIpv4<<", Port: "<<args.chatPort<<std::endl; 
     try
     {
+        int threadsNumb = 0;
+        std::ifstream file("config");
+        if (file.is_open()) {
+            std::string name, value;
+            getline(file, name, ':');
+            if(name=="ThreadPool"){
+                getline(file, value, ':');
+                threadsNumb = stoi(value);
+            }
+            file.close();
+        }
+        else
+        {
+            throw LocalException("Config file not found");
+        }
+        if (threadsNumb == 0)
+        {
+            throw LocalException("Threadpool size not configured from config file");
+        }
+
         peer = new Peer(&args);
         peer->registerRpcRequest("sda", onGetList);
         peer->registerRpcRequest("getlist", onGetList);
@@ -37,7 +55,7 @@ void PeerHandle::processRequest(int argc){
         peer->runCommunicator();
         std::thread rpcThread(rpcServer, peer, this->pipeName);
         
-        peerServer->listen(peer);
+        peerServer->listen(peer, threadsNumb);
 
         rpcThread.join();
         

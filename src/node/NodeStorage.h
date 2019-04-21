@@ -69,6 +69,7 @@ public:
     void emptyNeighbors();
     void addDiscNeighbor(std::pair<std::string, unsigned int> ip_port);
     std::vector<std::pair<std::string, unsigned int>> getDiscNeighbors();
+    std::map<std::string, PeerRecord*> getUsersRegistered();
 };
 
 #endif // !NODESTORAGE_H

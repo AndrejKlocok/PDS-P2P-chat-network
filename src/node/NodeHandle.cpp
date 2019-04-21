@@ -29,10 +29,28 @@ void NodeHandle::initNode(int argc){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
         return;
     }
-    std::cout<<"IP: " << args.regIpv4<<", Port: "<<args.regPort<<std::endl; 
-
     try
     {
+        int threadsNumb = 0;
+        std::ifstream file("config");
+        if (file.is_open()) {
+            std::string name, value;
+            getline(file, name, ':');
+            if(name=="ThreadPool"){
+                getline(file, value, ':');
+                threadsNumb = stoi(value);
+            }
+            file.close();
+        }
+        else
+        {
+            throw LocalException("Config file not found");
+        }
+        if (threadsNumb == 0)
+        {
+            throw LocalException("Threadpool size not configured from config file");
+        }
+        
         node = new Node(&args);
 
         //register RPC functions
@@ -58,7 +76,7 @@ void NodeHandle::initNode(int argc){
         //node server
         server = new NodeServer(socket);
 
-        std::thread nodeThread(nodeServer, node, server);
+        std::thread nodeThread(nodeServer, node, server, threadsNumb);
         rpcServer(node, this->pipeName);
         nodeThread.join();
         
@@ -122,9 +140,9 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
  * @param node 
  * @param server 
  */
-void NodeHandle::nodeServer(Node* node, NodeServer* server){
+void NodeHandle::nodeServer(Node* node, NodeServer* server, int threadsNumb){
     //bind socket
-    server->listen(node); 
+    server->listen(node, threadsNumb); 
 }
 
 /**

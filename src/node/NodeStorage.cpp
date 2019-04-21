@@ -110,7 +110,6 @@ bool NodeStorage::addNeighbor(std::string ipv4, unsigned int port, bool authorit
 
          if(authority){
             std::scoped_lock(neighborsMutex);
-            std::cout << iter->first.second<< "-" << iter->second->timeout << '\n';
             iter->second->timeout = 0;  
         }
         return false;
@@ -131,7 +130,6 @@ bool NodeStorage::incNodeTimer(std::pair<std::string, unsigned int> ip_port, int
     auto iter = neighbors.find(ip_port);
     if(iter != neighbors.end()){
         if(iter->second->timeout > 12){
-            //std::cout << "Timer-"<<ip_port.second<<"- is: "<< iter->second->timeout << '\n';
             std::scoped_lock(neighborsMutex);
             this->neighbors.erase(iter);
             return false;
@@ -282,4 +280,8 @@ bool NodeStorage::getIsDisc(){
 
 std::vector<std::pair<std::string, unsigned int>> NodeStorage::getDiscNeighbors(){
     return disconectedNeighbors;
+}
+
+std::map<std::string, PeerRecord*> NodeStorage::getUsersRegistered(){
+    return users_registerd;
 }
