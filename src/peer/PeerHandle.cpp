@@ -15,22 +15,14 @@ void PeerHandle::processRequest(int argc){
     try
     {
         int threadsNumb = 0;
-        std::ifstream file("config");
-        if (file.is_open()) {
-            std::string name, value;
-            getline(file, name, ':');
-            if(name=="ThreadPool"){
-                getline(file, value, ':');
-                threadsNumb = stoi(value);
-            }
-            file.close();
+        std::map<std::string, std::string> config = readConfig("config");
+        
+        auto iter = config.find("ThreadPoolClient");
+
+        if(iter != config.end()){
+            threadsNumb = stoi(iter->second);
         }
-        else
-        {
-            throw LocalException("Config file not found");
-        }
-        if (threadsNumb == 0)
-        {
+        else{
             throw LocalException("Threadpool size not configured from config file");
         }
 

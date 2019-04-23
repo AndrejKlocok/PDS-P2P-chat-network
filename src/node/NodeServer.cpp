@@ -42,8 +42,10 @@ void NodeServer::listen(Node* node, int threadPoolSize){
             req->addrLen = sizeof(struct sockaddr_in);
 
             json recvData = socket->recvData(req);
-            std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
-            std::cout << recvData.dump() << std::endl;
+            if(recvData["type"] != "update"){
+                std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
+                std::cout << recvData.dump() << std::endl;
+            }
             
             NodeWork* work = new NodeWork();
             work->node = node;

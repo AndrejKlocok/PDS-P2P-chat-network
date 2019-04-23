@@ -9,6 +9,7 @@ Node::Node(NodeArguments* args)
     this->storage = new NodeStorage(this);
     this->args = args;
     this->me = args->regIpv4+","+std::to_string(args->regPort);
+    this->updateThread = std::thread(nodeUpdate, this);
 }
 
 /**
@@ -19,10 +20,13 @@ Node::~Node(){
     try
     {
         storage->emptyNeighbors();
-        for( auto it = updateThreads.begin(); it != updateThreads.end(); ++it ) {
+        /*for( auto it = updateThreads.begin(); it != updateThreads.end(); ++it ) {
             if(it->second.joinable()){
                 it->second.join();
             }
+        }*/
+        if(updateThread.joinable()){
+            updateThread.join();
         }
         //notify peers
     }
@@ -95,14 +99,14 @@ void Node::request(json data, Request* request){
  * @param node object
  * @param ip_port pair
  */
-void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
+void Node::nodeUpdate(Node* node){
     try
     {   
-        Request* request = Socket::createRequest(ip_port.first, ip_port.second);
         json update = {
             {"type", "update"}
         };
         //i represents ammount of second that thread sleeps
+        NodeStorage* storage = node->getStorage();
         int i = 0;  
         do
         {
@@ -110,20 +114,25 @@ void Node::nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port){
                 i = 0;
             //send update every 4s
             if(i == 0){
-                update["txid"] = node->getStorage()->getTransactionNumber();
-                update["db"] = node->getStorage()->getDbRecords();
-                node->sendSocket(update, request);
+                update["db"] = storage->getDbRecords();
+                //foreach neighbor send update
+                for(auto neighbor : storage->getNeighbors())
+                {
+                    update["txid"] = storage->getTransactionNumber();
+                    node->sendSocket(update, neighbor.second->request);
+                }
+            }
+            for(auto neighbor : storage->getNeighbors())
+            {
+                if(!storage->incNodeTimer(neighbor.first, 1) && !storage->getIsDisc() ){
+                    storage->addDiscNeighbor(neighbor.first);
+                }
             }
             //sleep for 1s
             std::this_thread::sleep_for(std::chrono::seconds(1));
             i++;
 
-        } while (node->getStorage()->incNodeTimer(ip_port, 1) && !node->getStorage()->getIsExc()); 
-        
-        
-        //if node is disconnecting do nothing else notify that node is disconnected
-        if(!node->getStorage()->getIsDisc())
-            node->getStorage()->addDiscNeighbor(ip_port);
+        } while (!node->getStorage()->getIsExc()); 
     }
     catch(const std::exception& e)
     {
@@ -149,29 +158,6 @@ void Node::nodeDisconnect(Node* node, std::pair<std::string, unsigned int> ip_po
 }
 
 /**
- * @brief Method realeases update worker thread
- * 
- * @param ip_port pair
- */
-void Node::releaseThread(std::pair<std::string, unsigned int> ip_port){
-    auto iter = updateThreads.find(ip_port);
-
-    if(iter != updateThreads.end()){ 
-        //timeout
-        if(iter->second.joinable()){
-            iter->second.join();
-            std::scoped_lock(updateThreadMutex);
-            updateThreads.erase(iter);
-            return;
-        }
-        //thread is working, NodeRecord created, but did not existed in connectNode method, thus
-        //thread should have stopped already, so this case should not exists
-        
-        throw LocalException("Exception raised: Thread realease curruption for%s,%d", ip_port.first.c_str(), ip_port.second);
-    }
-}
-
-/**
  * @brief Method tries to make a new neighbor with node, according to given parameters
  * 
  * @param ipv4 string
@@ -189,10 +175,6 @@ bool Node::connectNode(std::string ipv4, unsigned int port, bool authority){
     }
 
     if(!storage->getIsDisc() && storage->addNeighbor(ipv4, port, authority)){
-        //check if it is not timeouted connection
-        releaseThread(ip_port);
-        updateThreads[ip_port] = std::thread(nodeUpdate, this, ip_port);
-
         return true;
     }
     else{

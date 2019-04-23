@@ -32,8 +32,9 @@ private:
     NodeStorage* storage;
     Socket* socket;
     NodeArguments* args;
-    std::mutex updateThreadMutex;
-    std::map<std::pair<std::string, unsigned int>, std::thread> updateThreads;
+    //std::mutex updateThreadMutex;
+    //std::map<std::pair<std::string, unsigned int>, std::thread> updateThreads;
+    std::thread updateThread;
     std::string me;
 public:
     Node(NodeArguments* args);
@@ -45,7 +46,7 @@ public:
     void rpcRequest(json* request);
     void request(json data, Request* request);
     void sendSocket(json data, Request* req);
-    void static nodeUpdate(Node* node, std::pair<std::string, unsigned int> ip_port);
+    void static nodeUpdate(Node* node);
     void static nodeDisconnect(Node* node, std::pair<std::string, unsigned int> ip_port, Request* request);
     NodeStorage* getStorage();
     void setSocket(Socket* socket);

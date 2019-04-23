@@ -1,6 +1,6 @@
 SRC_DIR  	= src
 LIBS_DIR	= libs
-IP = 192.168.2.95
+IP = 192.168.1.105
 
 
 # Set of src/inc files used in build process

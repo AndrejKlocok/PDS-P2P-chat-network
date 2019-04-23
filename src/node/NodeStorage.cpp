@@ -109,6 +109,7 @@ bool NodeStorage::addNeighbor(std::string ipv4, unsigned int port, bool authorit
     if(iter != neighbors.end()){ 
 
          if(authority){
+            std::cout << iter->first.second<< "-" << iter->second->timeout << '\n';
             std::scoped_lock(neighborsMutex);
             iter->second->timeout = 0;  
         }
