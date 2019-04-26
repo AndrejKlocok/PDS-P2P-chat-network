@@ -8,6 +8,10 @@
 
 class Peer;
 
+/**
+ * @brief Peer storage class
+ * 
+ */
 class PeerStorage
 {
 private:

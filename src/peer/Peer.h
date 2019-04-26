@@ -19,6 +19,10 @@ class PeerStorage;
 typedef void (*rpcFunction) (Peer*, json*) ;
 typedef void (*baseFunction) (Peer*, json, Request*) ;
 
+/**
+ * @brief Peer class
+ * 
+ */
 class Peer
 {
 private:

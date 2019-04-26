@@ -3,6 +3,10 @@
 
 #include <string>
 
+/**
+ * @brief Arguments of peer deamon
+ * 
+ */
 struct PeerArguments
 {
     unsigned short id;

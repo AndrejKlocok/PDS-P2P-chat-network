@@ -22,7 +22,7 @@ struct NodeRecord
 {
     Request* request;
     unsigned int timeout;
-    std::vector<PeerRecord> peers; //json peers;
+    std::vector<PeerRecord> peers;
 };
 
 class Node;

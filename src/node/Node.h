@@ -32,8 +32,6 @@ private:
     NodeStorage* storage;
     Socket* socket;
     NodeArguments* args;
-    //std::mutex updateThreadMutex;
-    //std::map<std::pair<std::string, unsigned int>, std::thread> updateThreads;
     std::thread updateThread;
     std::string me;
 public:

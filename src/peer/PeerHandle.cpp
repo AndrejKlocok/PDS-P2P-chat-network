@@ -6,7 +6,11 @@ PeerHandle::~PeerHandle(){
     unlink(this->pipeName.c_str());
     peer->~Peer();    
 }
-
+/**
+ * @brief Initialize peer object
+ * 
+ * @param argc number of arguments
+ */
 void PeerHandle::processRequest(int argc){
     if(argc != 13 ){
         ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
@@ -61,7 +65,7 @@ void PeerHandle::processRequest(int argc){
 }
 
 /**
- * @brief 
+ * @brief RPC thread worker function 
  * 
  * @param peer 
  * @param pipeName 
@@ -107,27 +111,52 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
     }
     
 }
-
+/**
+ * @brief Setter
+ * 
+ * @param regPort 
+ */
 void PeerHandle::setRegPort(  unsigned short regPort){
     this->args.regPort = regPort;
 }
-
+/**
+ * @brief Setter
+ * 
+ * @param regIpv4 
+ */
 void PeerHandle::setRegIpv4( std::string regIpv4){
     this->args.regIpv4 = regIpv4;
 }
 
+/**
+ * @brief Setter
+ * 
+ * @param id 
+ */
 void PeerHandle::setId( unsigned short id){
     this->args.id = id;
 }
-
+/**
+ * @brief Setter
+ * 
+ * @param username 
+ */
 void PeerHandle::setUsername( std::string username){
     this->args.username = username;
 }
-
+/**
+ * @brief Setter
+ * 
+ * @param chatPort 
+ */
 void PeerHandle::setChatPort(  unsigned short chatPort){
     this->args.chatPort = chatPort;
 }
-
+/**
+ * @brief Setter
+ * 
+ * @param chatIpv4 
+ */
 void PeerHandle::setChatIpv4( std::string chatIpv4){
     this->args.chatIpv4 = chatIpv4;
 }

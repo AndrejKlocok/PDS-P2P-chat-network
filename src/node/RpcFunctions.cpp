@@ -1,8 +1,12 @@
 #include "RpcFunctions.h"
 
+/**
+ * @brief Prints database of neighboring nodes with peers
+ * 
+ * @param node 
+ * @param data 
+ */
 void onDatabase(Node* node, json* data){
-    
-    
     std::cout << "------------<Database>------------" << '\n';
     auto local = node->getStorage()->getUsersRegistered();
     for(auto peer : local)
@@ -22,7 +26,12 @@ void onDatabase(Node* node, json* data){
     }
     std::cout << "----------------------------------" << '\n';
 }
-
+/**
+ * @brief Prints neighboring nodes
+ * 
+ * @param node 
+ * @param data 
+ */
 void onNeighbors(Node* node, json* data){
     std::cout << "Node neighbors: " << std::endl;
 
@@ -33,6 +42,12 @@ void onNeighbors(Node* node, json* data){
     std::cout<<std::endl;
 }
 
+/**
+ * @brief Connect node to other node described in json data
+ * 
+ * @param node 
+ * @param data json
+ */
 void onConnect(Node* node, json* data){
     std::string ipv4 = (*data)["ipv4"];
     unsigned int port = (*data)["port"];
@@ -42,17 +57,28 @@ void onConnect(Node* node, json* data){
         throw LocalException("Already connected to %s,%d", ipv4.c_str(), port);
     }
 }
-
+/**
+ * @brief Disconnects from mesh
+ * 
+ * @param node 
+ * @param data 
+ */
 void onDisconnect(Node* node, json* data){
     node->disconnect();
 }
 
+/**
+ * @brief Forces db synchronisation
+ * 
+ * @param node 
+ * @param data 
+ */
 void onSync(Node* node, json* data){
     json update = {
             {"type", "update"}
         };
     update["db"] = node->getStorage()->getDbRecords();
-    
+    // send update to neighboring nodes
     for(auto neighbor : node->getStorage()->getNeighbors())
     {
         update["txid"] = node->getStorage()->getTransactionNumber();

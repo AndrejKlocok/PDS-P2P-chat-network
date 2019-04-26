@@ -7,7 +7,10 @@
 #include "../libs/ctpl_stl.h"
 #include "Node.h"
 
-
+/**
+ * @brief Work description structure
+ * 
+ */
 struct NodeWork
 {
     Node* node;

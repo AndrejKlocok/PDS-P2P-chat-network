@@ -7,6 +7,10 @@
 #include "Peer.h"
 #include "../libs/ctpl_stl.h"
 
+/**
+ * @brief Work description structure
+ * 
+ */
 struct PeerWork
 {
     Peer* peer;
@@ -14,7 +18,10 @@ struct PeerWork
     json data;
 };
 
-
+/**
+ * @brief Peer server
+ * 
+ */
 class PeerServer
 {
 private:

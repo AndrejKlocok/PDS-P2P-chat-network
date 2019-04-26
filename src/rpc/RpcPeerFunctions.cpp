@@ -21,7 +21,7 @@ void sendPipePeerRequest(unsigned short id, json request){
 }
 
 /**
- * @brief --id <ushort> --peer --command message --from <username1> --to <username2> --message <message>
+ * @brief CMD Tries to send chat message
  * 
  * @param arguments 
  * @param argc 
@@ -44,7 +44,8 @@ void onMessage(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort> --peer --command getlist, který vynutí aktualizaci seznamu v síti známých peerů
+ * @brief Updating the peer database in a known peers network, ie sending a GETLIST 
+ * message and having it confirmed
  * 
  * @param arguments 
  * @param argc 
@@ -63,7 +64,8 @@ void onGetList(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort>  --peer --command peers, který zobrazí aktuální seznam peerů v síti
+ * @brief Displays the current list of peers in the network, ie the peer exchanges GETLIST 
+ * and LIST messages with the node, printing the contents of the LIST message
  * 
  * @param arguments 
  * @param argc 
@@ -82,8 +84,7 @@ void onPeers(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort> --peer --command reconnect --reg-ipv4 <IP> --reg-port <port>, který se odpojí od současného registračního
- *  uzlu (nulové HELLO) a připojí se k uzlu specifikovaném v parametrech
+ * @brief Disconnects from the current registration node (zero HELLO) and connects to the node specified in the parameters
  * 
  * @param arguments
  * @param argc 

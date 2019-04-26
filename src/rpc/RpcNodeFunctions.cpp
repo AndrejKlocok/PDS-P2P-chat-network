@@ -22,7 +22,7 @@ void sendPipeNodeRequest(unsigned short id, json request){
 
 
 /**
- * @brief --id <ushort> --node --command database, který zobrazí aktuální databázi peerů a jejich mapování
+ * @brief Displays the current database of peers and their mapping
  * 
  * @param arguments 
  * @param argc 
@@ -42,7 +42,7 @@ void onDatabase(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort> --node --command neighbors, který zobrazí seznam aktuálních sousedů registračního uzlu
+ * @brief Displays the list of current neighbors of the registration node
  * 
  * @param arguments 
  * @param argc 
@@ -62,8 +62,7 @@ void onNeighbors(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort> --node --command connect --reg-ipv4 <IP> --reg-port <port>, který se pokusí navázat sousedství s novým registračním uzlem
- *      navázat sousedství s novým registračním uzlem
+ * @brief Tries to establish a neighborhood with a new registration node
  * 
  * @param arguments 
  * @param argc 
@@ -85,7 +84,7 @@ void onConnect(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort> --node --command disconnect, který zruší sousedství se všemi uzly (stáhne z jejich DB své autoritativní záznamy) a odpojí node od sítě
+ * @brief Cancels the neighborhood with all nodes and disconnects the node from the network
  * 
  * @param arguments 
  * @param argc 
@@ -105,7 +104,7 @@ void onDisconnect(RpcArguments* arguments, int argc){
 }
 
 /**
- * @brief --id <ushort> --node --command sync, která vynutí synchronizaci DB s uzly, se kterými node aktuálně sousedí
+ * @brief Forces DB synchronization with nodes that are currently adjacent to the node
  * 
  * @param arguments 
  * @param argc 

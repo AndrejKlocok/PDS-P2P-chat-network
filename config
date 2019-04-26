@@ -1,2 +1,2 @@
-ThreadPoolServer 100
-ThreadPoolClient 10
+ThreadPoolServer 20
+ThreadPoolClient 4

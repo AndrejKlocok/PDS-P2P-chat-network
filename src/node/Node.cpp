@@ -20,11 +20,6 @@ Node::~Node(){
     try
     {
         storage->emptyNeighbors();
-        /*for( auto it = updateThreads.begin(); it != updateThreads.end(); ++it ) {
-            if(it->second.joinable()){
-                it->second.join();
-            }
-        }*/
         if(updateThread.joinable()){
             updateThread.join();
         }
@@ -89,7 +84,7 @@ void Node::request(json data, Request* request){
         iter->second(this, data, request);
     }
     else{
-        throw UnknownType();
+       throw GlobalException("Exception raised: type of message: %s not found", data["type"]);
     }
 }
 

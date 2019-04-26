@@ -11,6 +11,12 @@ PeerServer::~PeerServer()
     this->socket->~Socket();
 }
 
+/**
+ * @brief Worker thread function
+ * 
+ * @param id of thread
+ * @param work description of work
+ */
 void  worker(int id, PeerWork* work){
    try
    {
@@ -35,9 +41,13 @@ void  worker(int id, PeerWork* work){
 
 }
 
+/**
+ * @brief Listens on port, accepts UDP requests and pushes them to the pool.
+ * 
+ * @param node object
+ * @param threadPoolSize size of threadpool
+ */
 void PeerServer::listen(Peer* peer, int threadPoolSize){
-
-    
     try{
         ctpl::thread_pool p(threadPoolSize);
         do{

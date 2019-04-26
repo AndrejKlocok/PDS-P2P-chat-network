@@ -1,17 +1,36 @@
 #include "PeerFunctions.h"
 
+/**
+ * @brief Acknowledgement handler
+ * 
+ * @param peer 
+ * @param data 
+ * @param request 
+ */
 void onAck(Peer* peer, json data, Request* request){
     int transactionNumber = data["txid"];
     peer->getStorage()->insertAck(transactionNumber);
 }
-
+/**
+ * @brief Error handler prints error 
+ * 
+ * @param peer 
+ * @param data 
+ * @param request 
+ */
 void onError(Peer* peer, json data, Request* request){
     int transactionNumber = data["txid"];
     std::string verbose = data["verbose"];
 
     std::cerr<<"txid: " << transactionNumber<< ", " << verbose << std::endl;
 }
-
+/**
+ * @brief Handles list message according to set flags
+ * 
+ * @param peer 
+ * @param data 
+ * @param request 
+ */
 void onList(Peer* peer, json data, Request* request){
     json ack ={
         {"type", "ack"},
@@ -44,7 +63,13 @@ void onList(Peer* peer, json data, Request* request){
     
     peer->getStorage()->sendMessages(data["peers"]);
 }
-
+/**
+ * @brief Message handle function prints message
+ * 
+ * @param peer 
+ * @param data 
+ * @param request 
+ */
 void onMessage(Peer* peer, json data, Request* request){    
     json ack ={
         {"type", "ack"},
