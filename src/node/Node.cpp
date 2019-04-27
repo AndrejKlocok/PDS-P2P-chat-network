@@ -84,7 +84,7 @@ void Node::request(json data, Request* request){
         iter->second(this, data, request);
     }
     else{
-       throw GlobalException("Exception raised: type of message: %s not found", data["type"]);
+       throw GlobalException("Exception raised: type of message not found");
     }
 }
 

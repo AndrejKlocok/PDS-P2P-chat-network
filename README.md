@@ -37,7 +37,7 @@ ACK := {"type":"ack", "txid":ushort}
                        
 ERROR := {"type":"error", "txid":ushort, "verbose": "string"}
 
-Every message is [bencoded](https://en.wikipedia.org/wiki/Bencode) and encoded on the other site.
+Every message is [bencoded](https://en.wikipedia.org/wiki/Bencode) and decoded on the other site.
 
 # Node
 ## Execution
@@ -114,6 +114,15 @@ Cancels the neighborhood with all nodes and disconnects the node from the networ
 
     --node --command sync
 Forces DB synchronization with nodes that are currently adjacent to the node
+
+# Compatability
+This project was tested with implementations from following authors:
+
+*   Jan Hammera,xhamme00, python3 
+*   Roman Dobias, xdobia11, python3
+*   Adrian Kiraly, xkiral01, python3
+*   Lucia Pelanova, xpelan04, python3
+*   Tomas Blazek, xblaze31, python3
 
 # Other libraries
 In this project these libraries are used:

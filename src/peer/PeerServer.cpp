@@ -72,5 +72,6 @@ void PeerServer::listen(Peer* peer, int threadPoolSize){
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
+        peer->getStorage()->setExc();
     } 
 }
