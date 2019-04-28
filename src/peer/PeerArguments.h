@@ -1,3 +1,10 @@
+/**
+ * @file PeerArguments.h
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #ifndef PEERARGUMENTS_H
 #define PEERARGUMENTS_H
 

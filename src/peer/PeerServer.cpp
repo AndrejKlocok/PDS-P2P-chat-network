@@ -1,3 +1,10 @@
+/**
+ * @file PeerServer.cpp
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #include "PeerServer.h"
 
 PeerServer::PeerServer(Socket* socket)

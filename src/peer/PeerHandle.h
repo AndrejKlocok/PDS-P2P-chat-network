@@ -1,3 +1,10 @@
+/**
+ * @file PeerHandle.h
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #ifndef PEERHANDLE_H
 #define PEERHANDLE_H
 

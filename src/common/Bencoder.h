@@ -1,11 +1,8 @@
 /**
  * @file Bencoder.h
- * @author Andrej Klocok (xkloco00@vurbr.cz)
- * @brief 
- * @version 0.1
- * @date 2019-02-23
- * 
- * @copyright Copyright (c) 2019
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
  * 
  */
 #ifndef BENCODER_H

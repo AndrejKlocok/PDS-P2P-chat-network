@@ -1,9 +1,8 @@
 /**
  * @file pds18-rpc.cpp
- * @author Andrej Klocok, xkloco00@vutbr.cz
- * @brief 
- * @version 0.1
- * @date 2019-02-20
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
  * 
  * 
  */

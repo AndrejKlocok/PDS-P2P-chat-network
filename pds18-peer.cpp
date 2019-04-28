@@ -1,3 +1,12 @@
+/**
+ * @file pds18-peer.cpp
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #include <getopt.h>
 #include <stdlib.h>
 #include <limits.h>

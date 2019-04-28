@@ -1,3 +1,10 @@
+/**
+ * @file PeerHandle.cpp
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #include "PeerHandle.h"
 
 PeerHandle::PeerHandle(/* args */){}

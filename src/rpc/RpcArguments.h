@@ -1,3 +1,10 @@
+/**
+ * @file RpcArguments.h
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #ifndef RPCARGUMENTS_H
 #define RPCARGUMENTS_H
 

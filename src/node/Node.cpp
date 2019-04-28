@@ -1,3 +1,10 @@
+/**
+ * @file Node.cpp
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #include "Node.h"
 /**
  * @brief Construct a new Node:: Node object

@@ -1,3 +1,10 @@
+/**
+ * @file PeerStorage.cpp
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #include "PeerStorage.h"
 
 PeerStorage::PeerStorage(Peer* peer)
@@ -5,6 +12,7 @@ PeerStorage::PeerStorage(Peer* peer)
     this->peer = peer;
     this->isExc = false;
     this->isHello = false;
+    this->peersDisp = false;
     this->transactionNumber = 0;
 }
 

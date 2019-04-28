@@ -1,3 +1,10 @@
+/**
+ * @file Peer.cpp
+ * @author Andrej Klocok (xkloco00@vutbr.cz)
+ * @version 1.0
+ * @date 2019-04-28
+ * 
+ */
 #include "Peer.h"
 
 Peer::Peer(PeerArguments* args)
