@@ -105,7 +105,6 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
             try
             {
                 request = json::parse(buff);
-                std::cout<< "RPC: "<< request.dump()<<std::endl;
                 node->rpcRequest(&request);
 
             }

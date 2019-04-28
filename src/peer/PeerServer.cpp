@@ -54,8 +54,6 @@ void PeerServer::listen(Peer* peer, int threadPoolSize){
             Request* req = new Request();
             req->addrLen = sizeof(struct sockaddr_in);          
             json recvData = socket->recvData(req);
-            std::cout << "New data from: " << inet_ntoa(req->addr.sin_addr)<<" : "<< ntohs(req->addr.sin_port) << std::endl;
-            std::cout << recvData.dump() << std::endl;
             
             PeerWork* work = new PeerWork();
             work->peer = peer;

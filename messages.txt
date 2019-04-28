@@ -1,4 +1,4 @@
-./pds18-rpc --id 1 --peer --command message --from andrej --to anet --message "hello"
+./pds18-rpc --id 1 --peer --command message --from andrej --to aneta --message "hello"
 ./pds18-rpc --id 1 --peer --command getlist
 ./pds18-rpc --id 1 --peer --command peers
 ./pds18-rpc --id 1 --peer --command reconnect --reg-ipv4 192.168.1.105 --reg-port 8070
