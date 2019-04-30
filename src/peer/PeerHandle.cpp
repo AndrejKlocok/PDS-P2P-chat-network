@@ -34,7 +34,8 @@ void PeerHandle::processRequest(int argc){
             threadsNumb = stoi(iter->second);
         }
         else{
-            throw LocalException("Threadpool size not configured from config file");
+            std::cerr << "Threadpool size not configured from config file, using default: 2" << '\n';
+            threadsNumb = 2;
         }
 
         peer = new Peer(&args);

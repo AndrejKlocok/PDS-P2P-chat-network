@@ -47,7 +47,8 @@ void NodeHandle::initNode(int argc){
             threadsNumb = stoi(iter->second);
         }
         else{
-            throw LocalException("Threadpool size not configured from config file");
+            std::cerr << "Threadpool size not configured from config file, using default: 10" << '\n';
+            threadsNumb = 10;
         }
         
         node = new Node(&args);

@@ -58,16 +58,29 @@ void NodeServer::listen(Node* node, int threadPoolSize){
             Request* req = new Request();
             req->addrLen = sizeof(struct sockaddr_in);
             // accept request
-            json recvData = socket->recvData(req);
-            
-            // init work for thread
-            NodeWork* work = new NodeWork();
-            work->node = node;
-            work->req = req;
-            work->data = recvData;
+            try{
+                json recvData = socket->recvData(req);
+                // init work for thread
+                NodeWork* work = new NodeWork();
+                work->node = node;
+                work->req = req;
+                work->data = recvData;
 
-            // push new work to the pool
-            p.push(worker, work);
+                // push new work to the pool
+                p.push(worker, work);
+            }
+            catch(const BencodeExc& e){
+                std::cerr << e.what() << '\n';
+                json error = {
+                    {"type", "error"},
+                    {"txid", node->getStorage()->getTransactionNumber()},
+                    {"verbose", e.what()}
+                };
+                node->sendSocket(error, req);
+            }
+            catch (const std::exception& e){
+                std::cerr << e.what() << '\n';
+            }
 
         } while (!node->getStorage()->getIsExc());
     }

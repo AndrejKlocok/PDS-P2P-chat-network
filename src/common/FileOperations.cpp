@@ -31,9 +31,5 @@ std::map<std::string, std::string> readConfig(std::string config){
             }
             file.close();
         }
-        else
-        {
-            throw LocalException("Config file not found");
-        }
     return configMap;
 }

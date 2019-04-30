@@ -93,6 +93,18 @@ void Socket::sendData(json data, Request* req){
 }
 
 /**
+ * @brief Send data to given address via request struct
+ * 
+ * @param data json object
+ * @param req struct
+ */
+void Socket::sendDataErr(std::string message, Request* req){
+    sendto(sockfd, message.c_str(), message.length(),  
+        0, (struct sockaddr *) &req->addr, req->addrLen);
+
+}
+
+/**
  * @brief Receive data from socket
  * 
  * @return json 

@@ -55,6 +55,7 @@ public:
     json recvData(Request* addr);
     Request* getRequest();
     static Request* createRequest(std::string IP, unsigned short port);
+    void sendDataErr(std::string message, Request* req);
 };
 
 

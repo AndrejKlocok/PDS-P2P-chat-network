@@ -88,5 +88,3 @@ rpeer2:
 rpeer3:
 	./pds18-peer --id 3 --username jozef --chat-ipv4 $(IP) --chat-port 8083  --reg-ipv4 $(IP) --reg-port 8044
 
-rpeerMerlin:
-	./pds18-peer --id 4 --username merlin --chat-ipv4 $(IP) --chat-port 8083  --reg-ipv4 147.229.176.19 --reg-port 8042
