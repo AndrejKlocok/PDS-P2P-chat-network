@@ -53,9 +53,13 @@ void PeerHandle::processRequest(int argc){
         Socket* socket = new Socket(args.chatIpv4, args.chatPort);
         peer->setSocket(socket);
 
-        this->pipeName = std::to_string(args.id);
+        this->pipeName = "/tmp/"+std::to_string(args.id);
         peerServer = new PeerServer(socket);
-        
+
+        if(mkfifo(pipeName.c_str(), 0666) == -1){
+            throw LocalException("Pipe errno: %s", strerror(errno));
+        }
+
         peer->runCommunicator();
         std::thread rpcThread(rpcServer, peer, this->pipeName);
         
@@ -85,7 +89,6 @@ void PeerHandle::rpcServer(Peer* peer, std::string pipeName){
     json request;       //request to peer
     try
     {
-        mkfifo(pipeName.c_str(), 0666);
         do
         {
            fd = open(pipeName.c_str(), O_RDONLY);

@@ -17,8 +17,8 @@
 
 #include <string>
 
-#include "common/Bencoder.h"
-#include "common/MyExceptions.h"
+#include "Bencoder.h"
+#include "MyExceptions.h"
 
 #define BUFFER_SIZE 1024
 

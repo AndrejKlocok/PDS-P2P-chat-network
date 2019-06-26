@@ -18,8 +18,8 @@
 #include <map>
 #include <thread>
 
-#include "common/ErrHandle.h"
-#include "common/FileOperations.h"
+#include "../common/ErrHandle.h"
+#include "../common/FileOperations.h"
 
 #include "NodeServer.h"
 #include "NodeArguments.h"

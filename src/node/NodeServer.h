@@ -10,8 +10,8 @@
 
 #include <thread>
 
-#include "common/Socket.h"
-#include "../libs/ctpl_stl.h"
+#include "../common/Socket.h"
+#include "../../libs/ctpl_stl.h"
 #include "Node.h"
 
 /**

@@ -15,7 +15,7 @@
 #include <thread>
 #include <utility>
 
-#include "common/Socket.h"
+#include "../common/Socket.h"
 
 #include "NodeStorage.h"
 #include "NodeFunctions.h"

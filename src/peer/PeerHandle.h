@@ -19,8 +19,8 @@
 #include <thread>
 #include <chrono>
 
-#include "common/ErrHandle.h"
-#include "common/FileOperations.h"
+#include "../common/ErrHandle.h"
+#include "../common/FileOperations.h"
 
 #include "PeerArguments.h"
 #include "Peer.h"

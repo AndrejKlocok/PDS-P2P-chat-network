@@ -4,3 +4,10 @@ pds18-peer
 pds18-rpc
 *.o
 test*
+.idea/*
+
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt

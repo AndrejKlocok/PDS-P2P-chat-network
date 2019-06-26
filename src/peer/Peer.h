@@ -12,9 +12,9 @@
 #include <string>
 #include <thread>
 
-#include "common/ErrHandle.h"
-#include "common/MyExceptions.h"
-#include "common/Socket.h"
+#include "../common/ErrHandle.h"
+#include "../common/MyExceptions.h"
+#include "../common/Socket.h"
 
 #include "PeerStorage.h"
 #include "PeerFunctions.h"

@@ -19,6 +19,7 @@ NodeHandle::NodeHandle(/* args */){}
  */
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
+    std::cout << this->pipeName << std::endl;
     node->disconnect();
     node->getStorage()->setExc();
 
@@ -72,7 +73,11 @@ void NodeHandle::initNode(int argc){
         Socket* socket = new Socket(args.regIpv4, args.regPort);
         node->setSocket(socket);
         //pipename
-        this->pipeName = std::to_string(args.id);
+        this->pipeName = "/tmp/"+std::to_string(args.id);
+        //create pipe
+        if(mkfifo(pipeName.c_str(), 0666) == -1){
+            throw LocalException("Pipe errno: %s", strerror(errno));
+        }
         //node server
         server = new NodeServer(socket);
 
@@ -100,7 +105,6 @@ void NodeHandle::rpcServer(Node* node, std::string pipeName){
     json request;       //request to node
     try
     {
-        mkfifo(pipeName.c_str(), 0666);
         do
         {
            fd = open(pipeName.c_str(), O_RDONLY);

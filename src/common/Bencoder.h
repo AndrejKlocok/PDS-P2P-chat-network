@@ -11,9 +11,9 @@
 #include <string>
 #include <iostream>
 
-#include "../libs/json.hpp"
-#include "common/ErrHandle.h"
-#include "common/MyExceptions.h"
+#include "../../libs/json.hpp"
+#include "ErrHandle.h"
+#include "MyExceptions.h"
 using json = nlohmann::json;
 /**
  * @brief Class is used as bencoder/debecoder of JSON format of json.hpp. Throws BencodeExc

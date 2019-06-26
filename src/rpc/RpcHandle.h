@@ -11,7 +11,7 @@
 #include <string>
 #include <map>
 
-#include "common/ErrHandle.h"
+#include "../common/ErrHandle.h"
 #include "RpcArguments.h"
 #include "RpcNodeFunctions.h"
 #include "RpcPeerFunctions.h"

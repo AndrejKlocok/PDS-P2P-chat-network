@@ -11,8 +11,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "common/ErrHandle.h"
-#include "common/Bencoder.h"
+#include "../common/ErrHandle.h"
+#include "../common/Bencoder.h"
 #include "RpcArguments.h"
 
 

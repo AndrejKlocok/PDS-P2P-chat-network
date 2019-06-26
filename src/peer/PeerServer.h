@@ -10,9 +10,9 @@
 
 #include <thread>
 
-#include "common/Socket.h"
+#include "../common/Socket.h"
 #include "Peer.h"
-#include "../libs/ctpl_stl.h"
+#include "../../libs/ctpl_stl.h"
 
 /**
  * @brief Work description structure
