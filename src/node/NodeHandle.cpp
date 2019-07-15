@@ -19,7 +19,6 @@ NodeHandle::NodeHandle(/* args */){}
  */
 NodeHandle::~NodeHandle(){
     unlink(this->pipeName.c_str());
-    std::cout << this->pipeName << std::endl;
     node->disconnect();
     node->getStorage()->setExc();
 
@@ -90,6 +89,7 @@ void NodeHandle::initNode(int argc){
     {
         node->getStorage()->setExc();
         std::cerr << e.what() << '\n';
+        this->~NodeHandle();
     }
 }
 /**

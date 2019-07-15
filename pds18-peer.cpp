@@ -47,66 +47,73 @@ int main(int argc, char** argv)
     };
 
     signal(SIGINT, signalHandler);
+    try {
 
-    while ((opt = getopt_long(argc, argv, shortOptions, longOptions, &option_index)) != -1) {
-        
-        switch (opt) {
-            case 'd':
-                //cast identifier as unisgned short
-                id = strtoul(optarg, NULL, 0);
-                //check boundaries
-                if(id < USHRT_MAX)
-                    peerHandle->setId( (unsigned short) id);
-                else
-                    ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
-                
-            break;
 
-            case 'i':
-                if( !optarg && NULL != argv[optind] && '-' != argv[optind][0] )
-                    peerHandle->setChatIpv4(std::string(argv[optind++])); 
-            break;
+        while ((opt = getopt_long(argc, argv, shortOptions, longOptions, &option_index)) != -1) {
 
-            case 'p':
-                if( !optarg && NULL != argv[optind] && '-' != argv[optind][0] ){
-                    port = strtoul(argv[optind++], NULL, 0);
+            switch (opt) {
+                case 'd':
+                    //cast identifier as unisgned short
+                    id = strtoul(optarg, NULL, 0);
                     //check boundaries
-                    if(port < USHRT_MAX)
-                        peerHandle->setChatPort( (unsigned short) port); 
+                    if (id < USHRT_MAX)
+                        peerHandle->setId((unsigned short) id);
                     else
-                        ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
-                }
-                
-            break;
+                        throw LocalException("Wrong argument id: %ld",
+                                             id);//ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
 
-             case 'r':
-                if( !optarg && NULL != argv[optind] && '-' != argv[optind][0] )
-                    peerHandle->setRegIpv4(std::string(argv[optind++])); 
-            break;
+                    break;
 
-            case 's':
-                if( !optarg && NULL != argv[optind] && '-' != argv[optind][0] ){
-                    port = strtoul(argv[optind++], NULL, 0);
-                    //check boundaries
-                    if(port < USHRT_MAX)
-                        peerHandle->setRegPort( (unsigned short) port); 
-                    else
-                        ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
-                }
-                
-            break;
+                case 'i':
+                    if (!optarg && NULL != argv[optind] && '-' != argv[optind][0])
+                        peerHandle->setChatIpv4(std::string(argv[optind++]));
+                    break;
 
-            case 'u':
-                if( !optarg && NULL != argv[optind] && '-' != argv[optind][0] )
-                    peerHandle->setUsername(std::string(argv[optind++])); 
-            break;
+                case 'p':
+                    if (!optarg && NULL != argv[optind] && '-' != argv[optind][0]) {
+                        port = strtoul(argv[optind++], NULL, 0);
+                        //check boundaries
+                        if (port < USHRT_MAX)
+                            peerHandle->setChatPort((unsigned short) port);
+                        else
+                            ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
+                    }
 
-            default:
-                return 0; 
+                    break;
+
+                case 'r':
+                    if (!optarg && NULL != argv[optind] && '-' != argv[optind][0])
+                        peerHandle->setRegIpv4(std::string(argv[optind++]));
+                    break;
+
+                case 's':
+                    if (!optarg && NULL != argv[optind] && '-' != argv[optind][0]) {
+                        port = strtoul(argv[optind++], NULL, 0);
+                        //check boundaries
+                        if (port < USHRT_MAX)
+                            peerHandle->setRegPort((unsigned short) port);
+                        else
+                            ErrHandle::printErrMessage(ErrCodes::WrongArg, "");
+                    }
+
+                    break;
+
+                case 'u':
+                    if (!optarg && NULL != argv[optind] && '-' != argv[optind][0])
+                        peerHandle->setUsername(std::string(argv[optind++]));
+                    break;
+
+                default:
+                    return 0;
+            }
         }
+        peerHandle->processRequest(argc);
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
     }
 
-    peerHandle->processRequest(argc);
 
     return 0;
 }

@@ -16,7 +16,7 @@
 void sendPipeNodeRequest(unsigned short id, json request){
     try
     {
-        std::ofstream file{std::to_string(id)};
+        std::ofstream file{"/tmp/"+std::to_string(id)};
         file << request.dump();
         file.close();
     

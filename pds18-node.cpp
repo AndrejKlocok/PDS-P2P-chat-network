@@ -80,6 +80,5 @@ int main(int argc, char** argv)
     }
 
     nodeHandle->initNode(argc);
-
     return 0;
 }

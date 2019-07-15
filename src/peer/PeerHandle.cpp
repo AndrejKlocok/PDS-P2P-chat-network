@@ -72,6 +72,7 @@ void PeerHandle::processRequest(int argc){
     {
         peer->getStorage()->setExc();
         std::cerr << e.what() << '\n';
+        this->~PeerHandle();
     }
     
 }
