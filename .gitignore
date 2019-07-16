@@ -2,13 +2,15 @@
 pds18-node
 pds18-peer
 pds18-rpc
+runUnitTests
 *.o
 test*
 .idea/*
-
+CTestTestfile.cmake
 CMakeCache.txt
 CMakeFiles
 Makefile
 cmake_install.cmake
 install_manifest.txt
 *.cbp
+lib*

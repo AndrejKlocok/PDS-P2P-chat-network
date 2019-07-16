@@ -56,16 +56,62 @@ CMAKE_BINARY_DIR = /mnt/c/Users/H365379/CLionProjects/PDS-P2P-chat-network
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
 
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
-.PHONY : rebuild_cache/fast
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -77,6 +123,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,6 +168,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named runUnitTests
+
+# Build rule for target.
+runUnitTests: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 runUnitTests
+.PHONY : runUnitTests
+
+# fast build rule for target.
+runUnitTests/fast:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/build
+.PHONY : runUnitTests/fast
+
+#=============================================================================
+# Target rules for targets named node_lib
+
+# Build rule for target.
+node_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 node_lib
+.PHONY : node_lib
+
+# fast build rule for target.
+node_lib/fast:
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/build
+.PHONY : node_lib/fast
+
+#=============================================================================
 # Target rules for targets named pds18-rpc
 
 # Build rule for target.
@@ -122,6 +205,19 @@ pds18-rpc: cmake_check_build_system
 pds18-rpc/fast:
 	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/build
 .PHONY : pds18-rpc/fast
+
+#=============================================================================
+# Target rules for targets named common_lib
+
+# Build rule for target.
+common_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 common_lib
+.PHONY : common_lib
+
+# fast build rule for target.
+common_lib/fast:
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/build
+.PHONY : common_lib/fast
 
 #=============================================================================
 # Target rules for targets named pds18-peer
@@ -137,6 +233,32 @@ pds18-peer/fast:
 .PHONY : pds18-peer/fast
 
 #=============================================================================
+# Target rules for targets named peer_lib
+
+# Build rule for target.
+peer_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 peer_lib
+.PHONY : peer_lib
+
+# fast build rule for target.
+peer_lib/fast:
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/build
+.PHONY : peer_lib/fast
+
+#=============================================================================
+# Target rules for targets named rpc_lib
+
+# Build rule for target.
+rpc_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rpc_lib
+.PHONY : rpc_lib
+
+# fast build rule for target.
+rpc_lib/fast:
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/build
+.PHONY : rpc_lib/fast
+
+#=============================================================================
 # Target rules for targets named pds18-node
 
 # Build rule for target.
@@ -148,6 +270,58 @@ pds18-node: cmake_check_build_system
 pds18-node/fast:
 	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/build
 .PHONY : pds18-node/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) -f submodules/googletest/googlemock/CMakeFiles/gmock_main.dir/build.make submodules/googletest/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) -f submodules/googletest/googlemock/CMakeFiles/gmock.dir/build.make submodules/googletest/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) -f submodules/googletest/googletest/CMakeFiles/gtest_main.dir/build.make submodules/googletest/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) -f submodules/googletest/googletest/CMakeFiles/gtest.dir/build.make submodules/googletest/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
 
 pds18-node.o: pds18-node.cpp.o
 
@@ -236,9 +410,7 @@ src/common/Bencoder.o: src/common/Bencoder.cpp.o
 
 # target to build an object file
 src/common/Bencoder.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/Bencoder.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/Bencoder.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/Bencoder.cpp.o
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/Bencoder.cpp.o
 .PHONY : src/common/Bencoder.cpp.o
 
 src/common/Bencoder.i: src/common/Bencoder.cpp.i
@@ -247,9 +419,7 @@ src/common/Bencoder.i: src/common/Bencoder.cpp.i
 
 # target to preprocess a source file
 src/common/Bencoder.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/Bencoder.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/Bencoder.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/Bencoder.cpp.i
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/Bencoder.cpp.i
 .PHONY : src/common/Bencoder.cpp.i
 
 src/common/Bencoder.s: src/common/Bencoder.cpp.s
@@ -258,9 +428,7 @@ src/common/Bencoder.s: src/common/Bencoder.cpp.s
 
 # target to generate assembly for a file
 src/common/Bencoder.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/Bencoder.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/Bencoder.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/Bencoder.cpp.s
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/Bencoder.cpp.s
 .PHONY : src/common/Bencoder.cpp.s
 
 src/common/ErrHandle.o: src/common/ErrHandle.cpp.o
@@ -269,9 +437,7 @@ src/common/ErrHandle.o: src/common/ErrHandle.cpp.o
 
 # target to build an object file
 src/common/ErrHandle.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/ErrHandle.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/ErrHandle.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/ErrHandle.cpp.o
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/ErrHandle.cpp.o
 .PHONY : src/common/ErrHandle.cpp.o
 
 src/common/ErrHandle.i: src/common/ErrHandle.cpp.i
@@ -280,9 +446,7 @@ src/common/ErrHandle.i: src/common/ErrHandle.cpp.i
 
 # target to preprocess a source file
 src/common/ErrHandle.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/ErrHandle.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/ErrHandle.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/ErrHandle.cpp.i
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/ErrHandle.cpp.i
 .PHONY : src/common/ErrHandle.cpp.i
 
 src/common/ErrHandle.s: src/common/ErrHandle.cpp.s
@@ -291,9 +455,7 @@ src/common/ErrHandle.s: src/common/ErrHandle.cpp.s
 
 # target to generate assembly for a file
 src/common/ErrHandle.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/ErrHandle.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/ErrHandle.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/ErrHandle.cpp.s
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/ErrHandle.cpp.s
 .PHONY : src/common/ErrHandle.cpp.s
 
 src/common/FileOperations.o: src/common/FileOperations.cpp.o
@@ -302,9 +464,7 @@ src/common/FileOperations.o: src/common/FileOperations.cpp.o
 
 # target to build an object file
 src/common/FileOperations.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/FileOperations.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/FileOperations.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/FileOperations.cpp.o
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/FileOperations.cpp.o
 .PHONY : src/common/FileOperations.cpp.o
 
 src/common/FileOperations.i: src/common/FileOperations.cpp.i
@@ -313,9 +473,7 @@ src/common/FileOperations.i: src/common/FileOperations.cpp.i
 
 # target to preprocess a source file
 src/common/FileOperations.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/FileOperations.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/FileOperations.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/FileOperations.cpp.i
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/FileOperations.cpp.i
 .PHONY : src/common/FileOperations.cpp.i
 
 src/common/FileOperations.s: src/common/FileOperations.cpp.s
@@ -324,9 +482,7 @@ src/common/FileOperations.s: src/common/FileOperations.cpp.s
 
 # target to generate assembly for a file
 src/common/FileOperations.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/FileOperations.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/FileOperations.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/FileOperations.cpp.s
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/FileOperations.cpp.s
 .PHONY : src/common/FileOperations.cpp.s
 
 src/common/Socket.o: src/common/Socket.cpp.o
@@ -335,9 +491,7 @@ src/common/Socket.o: src/common/Socket.cpp.o
 
 # target to build an object file
 src/common/Socket.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/Socket.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/Socket.cpp.o
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/Socket.cpp.o
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/Socket.cpp.o
 .PHONY : src/common/Socket.cpp.o
 
 src/common/Socket.i: src/common/Socket.cpp.i
@@ -346,9 +500,7 @@ src/common/Socket.i: src/common/Socket.cpp.i
 
 # target to preprocess a source file
 src/common/Socket.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/Socket.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/Socket.cpp.i
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/Socket.cpp.i
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/Socket.cpp.i
 .PHONY : src/common/Socket.cpp.i
 
 src/common/Socket.s: src/common/Socket.cpp.s
@@ -357,9 +509,7 @@ src/common/Socket.s: src/common/Socket.cpp.s
 
 # target to generate assembly for a file
 src/common/Socket.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/common/Socket.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/common/Socket.cpp.s
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/common/Socket.cpp.s
+	$(MAKE) -f CMakeFiles/common_lib.dir/build.make CMakeFiles/common_lib.dir/src/common/Socket.cpp.s
 .PHONY : src/common/Socket.cpp.s
 
 src/node/Node.o: src/node/Node.cpp.o
@@ -368,7 +518,7 @@ src/node/Node.o: src/node/Node.cpp.o
 
 # target to build an object file
 src/node/Node.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/Node.cpp.o
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/Node.cpp.o
 .PHONY : src/node/Node.cpp.o
 
 src/node/Node.i: src/node/Node.cpp.i
@@ -377,7 +527,7 @@ src/node/Node.i: src/node/Node.cpp.i
 
 # target to preprocess a source file
 src/node/Node.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/Node.cpp.i
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/Node.cpp.i
 .PHONY : src/node/Node.cpp.i
 
 src/node/Node.s: src/node/Node.cpp.s
@@ -386,7 +536,7 @@ src/node/Node.s: src/node/Node.cpp.s
 
 # target to generate assembly for a file
 src/node/Node.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/Node.cpp.s
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/Node.cpp.s
 .PHONY : src/node/Node.cpp.s
 
 src/node/NodeFunctions.o: src/node/NodeFunctions.cpp.o
@@ -395,7 +545,7 @@ src/node/NodeFunctions.o: src/node/NodeFunctions.cpp.o
 
 # target to build an object file
 src/node/NodeFunctions.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeFunctions.cpp.o
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeFunctions.cpp.o
 .PHONY : src/node/NodeFunctions.cpp.o
 
 src/node/NodeFunctions.i: src/node/NodeFunctions.cpp.i
@@ -404,7 +554,7 @@ src/node/NodeFunctions.i: src/node/NodeFunctions.cpp.i
 
 # target to preprocess a source file
 src/node/NodeFunctions.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeFunctions.cpp.i
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeFunctions.cpp.i
 .PHONY : src/node/NodeFunctions.cpp.i
 
 src/node/NodeFunctions.s: src/node/NodeFunctions.cpp.s
@@ -413,7 +563,7 @@ src/node/NodeFunctions.s: src/node/NodeFunctions.cpp.s
 
 # target to generate assembly for a file
 src/node/NodeFunctions.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeFunctions.cpp.s
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeFunctions.cpp.s
 .PHONY : src/node/NodeFunctions.cpp.s
 
 src/node/NodeHandle.o: src/node/NodeHandle.cpp.o
@@ -422,7 +572,7 @@ src/node/NodeHandle.o: src/node/NodeHandle.cpp.o
 
 # target to build an object file
 src/node/NodeHandle.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeHandle.cpp.o
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeHandle.cpp.o
 .PHONY : src/node/NodeHandle.cpp.o
 
 src/node/NodeHandle.i: src/node/NodeHandle.cpp.i
@@ -431,7 +581,7 @@ src/node/NodeHandle.i: src/node/NodeHandle.cpp.i
 
 # target to preprocess a source file
 src/node/NodeHandle.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeHandle.cpp.i
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeHandle.cpp.i
 .PHONY : src/node/NodeHandle.cpp.i
 
 src/node/NodeHandle.s: src/node/NodeHandle.cpp.s
@@ -440,7 +590,7 @@ src/node/NodeHandle.s: src/node/NodeHandle.cpp.s
 
 # target to generate assembly for a file
 src/node/NodeHandle.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeHandle.cpp.s
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeHandle.cpp.s
 .PHONY : src/node/NodeHandle.cpp.s
 
 src/node/NodeServer.o: src/node/NodeServer.cpp.o
@@ -449,7 +599,7 @@ src/node/NodeServer.o: src/node/NodeServer.cpp.o
 
 # target to build an object file
 src/node/NodeServer.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeServer.cpp.o
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeServer.cpp.o
 .PHONY : src/node/NodeServer.cpp.o
 
 src/node/NodeServer.i: src/node/NodeServer.cpp.i
@@ -458,7 +608,7 @@ src/node/NodeServer.i: src/node/NodeServer.cpp.i
 
 # target to preprocess a source file
 src/node/NodeServer.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeServer.cpp.i
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeServer.cpp.i
 .PHONY : src/node/NodeServer.cpp.i
 
 src/node/NodeServer.s: src/node/NodeServer.cpp.s
@@ -467,7 +617,7 @@ src/node/NodeServer.s: src/node/NodeServer.cpp.s
 
 # target to generate assembly for a file
 src/node/NodeServer.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeServer.cpp.s
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeServer.cpp.s
 .PHONY : src/node/NodeServer.cpp.s
 
 src/node/NodeStorage.o: src/node/NodeStorage.cpp.o
@@ -476,7 +626,7 @@ src/node/NodeStorage.o: src/node/NodeStorage.cpp.o
 
 # target to build an object file
 src/node/NodeStorage.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeStorage.cpp.o
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeStorage.cpp.o
 .PHONY : src/node/NodeStorage.cpp.o
 
 src/node/NodeStorage.i: src/node/NodeStorage.cpp.i
@@ -485,7 +635,7 @@ src/node/NodeStorage.i: src/node/NodeStorage.cpp.i
 
 # target to preprocess a source file
 src/node/NodeStorage.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeStorage.cpp.i
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeStorage.cpp.i
 .PHONY : src/node/NodeStorage.cpp.i
 
 src/node/NodeStorage.s: src/node/NodeStorage.cpp.s
@@ -494,7 +644,7 @@ src/node/NodeStorage.s: src/node/NodeStorage.cpp.s
 
 # target to generate assembly for a file
 src/node/NodeStorage.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/NodeStorage.cpp.s
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/NodeStorage.cpp.s
 .PHONY : src/node/NodeStorage.cpp.s
 
 src/node/RpcFunctions.o: src/node/RpcFunctions.cpp.o
@@ -503,7 +653,7 @@ src/node/RpcFunctions.o: src/node/RpcFunctions.cpp.o
 
 # target to build an object file
 src/node/RpcFunctions.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/RpcFunctions.cpp.o
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/RpcFunctions.cpp.o
 .PHONY : src/node/RpcFunctions.cpp.o
 
 src/node/RpcFunctions.i: src/node/RpcFunctions.cpp.i
@@ -512,7 +662,7 @@ src/node/RpcFunctions.i: src/node/RpcFunctions.cpp.i
 
 # target to preprocess a source file
 src/node/RpcFunctions.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/RpcFunctions.cpp.i
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/RpcFunctions.cpp.i
 .PHONY : src/node/RpcFunctions.cpp.i
 
 src/node/RpcFunctions.s: src/node/RpcFunctions.cpp.s
@@ -521,7 +671,7 @@ src/node/RpcFunctions.s: src/node/RpcFunctions.cpp.s
 
 # target to generate assembly for a file
 src/node/RpcFunctions.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-node.dir/build.make CMakeFiles/pds18-node.dir/src/node/RpcFunctions.cpp.s
+	$(MAKE) -f CMakeFiles/node_lib.dir/build.make CMakeFiles/node_lib.dir/src/node/RpcFunctions.cpp.s
 .PHONY : src/node/RpcFunctions.cpp.s
 
 src/peer/Peer.o: src/peer/Peer.cpp.o
@@ -530,7 +680,7 @@ src/peer/Peer.o: src/peer/Peer.cpp.o
 
 # target to build an object file
 src/peer/Peer.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/Peer.cpp.o
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/Peer.cpp.o
 .PHONY : src/peer/Peer.cpp.o
 
 src/peer/Peer.i: src/peer/Peer.cpp.i
@@ -539,7 +689,7 @@ src/peer/Peer.i: src/peer/Peer.cpp.i
 
 # target to preprocess a source file
 src/peer/Peer.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/Peer.cpp.i
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/Peer.cpp.i
 .PHONY : src/peer/Peer.cpp.i
 
 src/peer/Peer.s: src/peer/Peer.cpp.s
@@ -548,7 +698,7 @@ src/peer/Peer.s: src/peer/Peer.cpp.s
 
 # target to generate assembly for a file
 src/peer/Peer.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/Peer.cpp.s
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/Peer.cpp.s
 .PHONY : src/peer/Peer.cpp.s
 
 src/peer/PeerFunctions.o: src/peer/PeerFunctions.cpp.o
@@ -557,7 +707,7 @@ src/peer/PeerFunctions.o: src/peer/PeerFunctions.cpp.o
 
 # target to build an object file
 src/peer/PeerFunctions.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerFunctions.cpp.o
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerFunctions.cpp.o
 .PHONY : src/peer/PeerFunctions.cpp.o
 
 src/peer/PeerFunctions.i: src/peer/PeerFunctions.cpp.i
@@ -566,7 +716,7 @@ src/peer/PeerFunctions.i: src/peer/PeerFunctions.cpp.i
 
 # target to preprocess a source file
 src/peer/PeerFunctions.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerFunctions.cpp.i
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerFunctions.cpp.i
 .PHONY : src/peer/PeerFunctions.cpp.i
 
 src/peer/PeerFunctions.s: src/peer/PeerFunctions.cpp.s
@@ -575,7 +725,7 @@ src/peer/PeerFunctions.s: src/peer/PeerFunctions.cpp.s
 
 # target to generate assembly for a file
 src/peer/PeerFunctions.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerFunctions.cpp.s
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerFunctions.cpp.s
 .PHONY : src/peer/PeerFunctions.cpp.s
 
 src/peer/PeerHandle.o: src/peer/PeerHandle.cpp.o
@@ -584,7 +734,7 @@ src/peer/PeerHandle.o: src/peer/PeerHandle.cpp.o
 
 # target to build an object file
 src/peer/PeerHandle.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerHandle.cpp.o
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerHandle.cpp.o
 .PHONY : src/peer/PeerHandle.cpp.o
 
 src/peer/PeerHandle.i: src/peer/PeerHandle.cpp.i
@@ -593,7 +743,7 @@ src/peer/PeerHandle.i: src/peer/PeerHandle.cpp.i
 
 # target to preprocess a source file
 src/peer/PeerHandle.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerHandle.cpp.i
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerHandle.cpp.i
 .PHONY : src/peer/PeerHandle.cpp.i
 
 src/peer/PeerHandle.s: src/peer/PeerHandle.cpp.s
@@ -602,7 +752,7 @@ src/peer/PeerHandle.s: src/peer/PeerHandle.cpp.s
 
 # target to generate assembly for a file
 src/peer/PeerHandle.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerHandle.cpp.s
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerHandle.cpp.s
 .PHONY : src/peer/PeerHandle.cpp.s
 
 src/peer/PeerServer.o: src/peer/PeerServer.cpp.o
@@ -611,7 +761,7 @@ src/peer/PeerServer.o: src/peer/PeerServer.cpp.o
 
 # target to build an object file
 src/peer/PeerServer.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerServer.cpp.o
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerServer.cpp.o
 .PHONY : src/peer/PeerServer.cpp.o
 
 src/peer/PeerServer.i: src/peer/PeerServer.cpp.i
@@ -620,7 +770,7 @@ src/peer/PeerServer.i: src/peer/PeerServer.cpp.i
 
 # target to preprocess a source file
 src/peer/PeerServer.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerServer.cpp.i
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerServer.cpp.i
 .PHONY : src/peer/PeerServer.cpp.i
 
 src/peer/PeerServer.s: src/peer/PeerServer.cpp.s
@@ -629,7 +779,7 @@ src/peer/PeerServer.s: src/peer/PeerServer.cpp.s
 
 # target to generate assembly for a file
 src/peer/PeerServer.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerServer.cpp.s
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerServer.cpp.s
 .PHONY : src/peer/PeerServer.cpp.s
 
 src/peer/PeerStorage.o: src/peer/PeerStorage.cpp.o
@@ -638,7 +788,7 @@ src/peer/PeerStorage.o: src/peer/PeerStorage.cpp.o
 
 # target to build an object file
 src/peer/PeerStorage.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerStorage.cpp.o
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerStorage.cpp.o
 .PHONY : src/peer/PeerStorage.cpp.o
 
 src/peer/PeerStorage.i: src/peer/PeerStorage.cpp.i
@@ -647,7 +797,7 @@ src/peer/PeerStorage.i: src/peer/PeerStorage.cpp.i
 
 # target to preprocess a source file
 src/peer/PeerStorage.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerStorage.cpp.i
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerStorage.cpp.i
 .PHONY : src/peer/PeerStorage.cpp.i
 
 src/peer/PeerStorage.s: src/peer/PeerStorage.cpp.s
@@ -656,7 +806,7 @@ src/peer/PeerStorage.s: src/peer/PeerStorage.cpp.s
 
 # target to generate assembly for a file
 src/peer/PeerStorage.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/PeerStorage.cpp.s
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/PeerStorage.cpp.s
 .PHONY : src/peer/PeerStorage.cpp.s
 
 src/peer/RpcFunctions.o: src/peer/RpcFunctions.cpp.o
@@ -665,7 +815,7 @@ src/peer/RpcFunctions.o: src/peer/RpcFunctions.cpp.o
 
 # target to build an object file
 src/peer/RpcFunctions.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/RpcFunctions.cpp.o
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/RpcFunctions.cpp.o
 .PHONY : src/peer/RpcFunctions.cpp.o
 
 src/peer/RpcFunctions.i: src/peer/RpcFunctions.cpp.i
@@ -674,7 +824,7 @@ src/peer/RpcFunctions.i: src/peer/RpcFunctions.cpp.i
 
 # target to preprocess a source file
 src/peer/RpcFunctions.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/RpcFunctions.cpp.i
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/RpcFunctions.cpp.i
 .PHONY : src/peer/RpcFunctions.cpp.i
 
 src/peer/RpcFunctions.s: src/peer/RpcFunctions.cpp.s
@@ -683,7 +833,7 @@ src/peer/RpcFunctions.s: src/peer/RpcFunctions.cpp.s
 
 # target to generate assembly for a file
 src/peer/RpcFunctions.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-peer.dir/build.make CMakeFiles/pds18-peer.dir/src/peer/RpcFunctions.cpp.s
+	$(MAKE) -f CMakeFiles/peer_lib.dir/build.make CMakeFiles/peer_lib.dir/src/peer/RpcFunctions.cpp.s
 .PHONY : src/peer/RpcFunctions.cpp.s
 
 src/rpc/RpcHandle.o: src/rpc/RpcHandle.cpp.o
@@ -692,7 +842,7 @@ src/rpc/RpcHandle.o: src/rpc/RpcHandle.cpp.o
 
 # target to build an object file
 src/rpc/RpcHandle.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcHandle.cpp.o
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcHandle.cpp.o
 .PHONY : src/rpc/RpcHandle.cpp.o
 
 src/rpc/RpcHandle.i: src/rpc/RpcHandle.cpp.i
@@ -701,7 +851,7 @@ src/rpc/RpcHandle.i: src/rpc/RpcHandle.cpp.i
 
 # target to preprocess a source file
 src/rpc/RpcHandle.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcHandle.cpp.i
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcHandle.cpp.i
 .PHONY : src/rpc/RpcHandle.cpp.i
 
 src/rpc/RpcHandle.s: src/rpc/RpcHandle.cpp.s
@@ -710,7 +860,7 @@ src/rpc/RpcHandle.s: src/rpc/RpcHandle.cpp.s
 
 # target to generate assembly for a file
 src/rpc/RpcHandle.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcHandle.cpp.s
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcHandle.cpp.s
 .PHONY : src/rpc/RpcHandle.cpp.s
 
 src/rpc/RpcNodeFunctions.o: src/rpc/RpcNodeFunctions.cpp.o
@@ -719,7 +869,7 @@ src/rpc/RpcNodeFunctions.o: src/rpc/RpcNodeFunctions.cpp.o
 
 # target to build an object file
 src/rpc/RpcNodeFunctions.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcNodeFunctions.cpp.o
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcNodeFunctions.cpp.o
 .PHONY : src/rpc/RpcNodeFunctions.cpp.o
 
 src/rpc/RpcNodeFunctions.i: src/rpc/RpcNodeFunctions.cpp.i
@@ -728,7 +878,7 @@ src/rpc/RpcNodeFunctions.i: src/rpc/RpcNodeFunctions.cpp.i
 
 # target to preprocess a source file
 src/rpc/RpcNodeFunctions.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcNodeFunctions.cpp.i
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcNodeFunctions.cpp.i
 .PHONY : src/rpc/RpcNodeFunctions.cpp.i
 
 src/rpc/RpcNodeFunctions.s: src/rpc/RpcNodeFunctions.cpp.s
@@ -737,7 +887,7 @@ src/rpc/RpcNodeFunctions.s: src/rpc/RpcNodeFunctions.cpp.s
 
 # target to generate assembly for a file
 src/rpc/RpcNodeFunctions.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcNodeFunctions.cpp.s
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcNodeFunctions.cpp.s
 .PHONY : src/rpc/RpcNodeFunctions.cpp.s
 
 src/rpc/RpcPeerFunctions.o: src/rpc/RpcPeerFunctions.cpp.o
@@ -746,7 +896,7 @@ src/rpc/RpcPeerFunctions.o: src/rpc/RpcPeerFunctions.cpp.o
 
 # target to build an object file
 src/rpc/RpcPeerFunctions.cpp.o:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcPeerFunctions.cpp.o
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcPeerFunctions.cpp.o
 .PHONY : src/rpc/RpcPeerFunctions.cpp.o
 
 src/rpc/RpcPeerFunctions.i: src/rpc/RpcPeerFunctions.cpp.i
@@ -755,7 +905,7 @@ src/rpc/RpcPeerFunctions.i: src/rpc/RpcPeerFunctions.cpp.i
 
 # target to preprocess a source file
 src/rpc/RpcPeerFunctions.cpp.i:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcPeerFunctions.cpp.i
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcPeerFunctions.cpp.i
 .PHONY : src/rpc/RpcPeerFunctions.cpp.i
 
 src/rpc/RpcPeerFunctions.s: src/rpc/RpcPeerFunctions.cpp.s
@@ -764,8 +914,62 @@ src/rpc/RpcPeerFunctions.s: src/rpc/RpcPeerFunctions.cpp.s
 
 # target to generate assembly for a file
 src/rpc/RpcPeerFunctions.cpp.s:
-	$(MAKE) -f CMakeFiles/pds18-rpc.dir/build.make CMakeFiles/pds18-rpc.dir/src/rpc/RpcPeerFunctions.cpp.s
+	$(MAKE) -f CMakeFiles/rpc_lib.dir/build.make CMakeFiles/rpc_lib.dir/src/rpc/RpcPeerFunctions.cpp.s
 .PHONY : src/rpc/RpcPeerFunctions.cpp.s
+
+test/Bencoder_test.o: test/Bencoder_test.cpp.o
+
+.PHONY : test/Bencoder_test.o
+
+# target to build an object file
+test/Bencoder_test.cpp.o:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/test/Bencoder_test.cpp.o
+.PHONY : test/Bencoder_test.cpp.o
+
+test/Bencoder_test.i: test/Bencoder_test.cpp.i
+
+.PHONY : test/Bencoder_test.i
+
+# target to preprocess a source file
+test/Bencoder_test.cpp.i:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/test/Bencoder_test.cpp.i
+.PHONY : test/Bencoder_test.cpp.i
+
+test/Bencoder_test.s: test/Bencoder_test.cpp.s
+
+.PHONY : test/Bencoder_test.s
+
+# target to generate assembly for a file
+test/Bencoder_test.cpp.s:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/test/Bencoder_test.cpp.s
+.PHONY : test/Bencoder_test.cpp.s
+
+test/Socket_test.o: test/Socket_test.cpp.o
+
+.PHONY : test/Socket_test.o
+
+# target to build an object file
+test/Socket_test.cpp.o:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/test/Socket_test.cpp.o
+.PHONY : test/Socket_test.cpp.o
+
+test/Socket_test.i: test/Socket_test.cpp.i
+
+.PHONY : test/Socket_test.i
+
+# target to preprocess a source file
+test/Socket_test.cpp.i:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/test/Socket_test.cpp.i
+.PHONY : test/Socket_test.cpp.i
+
+test/Socket_test.s: test/Socket_test.cpp.s
+
+.PHONY : test/Socket_test.s
+
+# target to generate assembly for a file
+test/Socket_test.cpp.s:
+	$(MAKE) -f CMakeFiles/runUnitTests.dir/build.make CMakeFiles/runUnitTests.dir/test/Socket_test.cpp.s
+.PHONY : test/Socket_test.cpp.s
 
 # Help Target
 help:
@@ -773,11 +977,25 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
+	@echo "... install/strip"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... test"
+	@echo "... list_install_components"
+	@echo "... runUnitTests"
+	@echo "... node_lib"
 	@echo "... pds18-rpc"
+	@echo "... common_lib"
 	@echo "... pds18-peer"
 	@echo "... edit_cache"
+	@echo "... peer_lib"
+	@echo "... rpc_lib"
+	@echo "... rebuild_cache"
 	@echo "... pds18-node"
+	@echo "... gmock_main"
+	@echo "... gmock"
+	@echo "... gtest_main"
+	@echo "... gtest"
 	@echo "... pds18-node.o"
 	@echo "... pds18-node.i"
 	@echo "... pds18-node.s"
@@ -844,6 +1062,12 @@ help:
 	@echo "... src/rpc/RpcPeerFunctions.o"
 	@echo "... src/rpc/RpcPeerFunctions.i"
 	@echo "... src/rpc/RpcPeerFunctions.s"
+	@echo "... test/Bencoder_test.o"
+	@echo "... test/Bencoder_test.i"
+	@echo "... test/Bencoder_test.s"
+	@echo "... test/Socket_test.o"
+	@echo "... test/Socket_test.i"
+	@echo "... test/Socket_test.s"
 .PHONY : help
 
 
