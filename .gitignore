@@ -4,7 +4,6 @@ pds18-peer
 pds18-rpc
 runUnitTests
 *.o
-test*
 .idea/*
 CTestTestfile.cmake
 CMakeCache.txt
@@ -14,3 +13,4 @@ cmake_install.cmake
 install_manifest.txt
 *.cbp
 lib*
+Testing*
