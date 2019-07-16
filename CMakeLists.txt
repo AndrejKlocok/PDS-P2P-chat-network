@@ -26,10 +26,10 @@ target_link_libraries(pds18-rpc rpc_lib common_lib)
 
 SET( CMAKE_CXX_FLAGS  "-std=c++17 -Wall -pedantic -pthread")
 
-################################
+########################################
 # GTest
-################################
-ADD_SUBDIRECTORY (submodules/googletest)
+########################################
+add_subdirectory (submodules/googletest)
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
