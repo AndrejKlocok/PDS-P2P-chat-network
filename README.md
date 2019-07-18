@@ -4,16 +4,11 @@ Project consists of 3 cli applications: pds18-node, pds18-peer, pds18-rpc. Peer 
 ## Configuration
 Config file structure:
 
-        ThreadPoolServer 20
-        ThreadPoolClient 4
-## Build
-In referenced VM use:
-
-	make all
-
-For faster compilation use parallel execution, n is number of task:
-
-    make all -jn
+        ThreadPoolServer 4
+        ThreadPoolClient 2
+## Build     
+        cmake .
+        make all
 
 ## Protocol
 Protocol structure:
@@ -150,16 +145,8 @@ Cancels the neighborhood with all nodes and disconnects the node from the networ
     --node --command sync
 Forces DB synchronization with nodes that are currently adjacent to the node
 
-# Compatability
-This project was tested with implementations from following authors:
-
-*   Jan Hammera,xhamme00, python3 
-*   Roman Dobias, xdobia11, python3
-*   Adrian Kiraly, xkiral01, python3
-*   Lucia Pelanova, xpelan04, python3
-*   Tomas Blazek, xblaze31, python3
-
 # Other libraries
 In this project these libraries are used:
 *   [JSON for Modern C++ ](https://github.com/nlohmann/json)
 *   [Modern and efficient C++ Thread Pool Library](https://github.com/vit-vit/CTPL)
+*   [Googletest - Google Testing and Mocking Framework](https://github.com/google/googletest)
